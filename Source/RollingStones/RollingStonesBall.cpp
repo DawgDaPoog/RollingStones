@@ -40,12 +40,8 @@ ARollingStonesBall::ARollingStonesBall()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 
-	// Set up forces
-	RollTorque = 50000000.0f;
-	JumpImpulse = 350000.0f;
-	bCanJump = true; // Start being able to jump
-}
 
+}
 
 void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
@@ -53,59 +49,17 @@ void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("MoveRight", this, &ARollingStonesBall::MoveRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &ARollingStonesBall::MoveForward);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ARollingStonesBall::Jump);
-
-	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &ARollingStonesBall::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &ARollingStonesBall::TouchStopped);
 }
 
 void ARollingStonesBall::MoveRight(float Val)
 {
-	const FVector Torque = FVector(-1.f * Val * RollTorque, 0.f, 0.f);
-	Ball->AddTorqueInRadians(Torque);
+
 }
 
 void ARollingStonesBall::MoveForward(float Val)
 {
-	const FVector Torque = FVector(0.f, Val * RollTorque, 0.f);
-	Ball->AddTorqueInRadians(Torque);	
 }
 
-void ARollingStonesBall::Jump()
-{
-	if(bCanJump)
-	{
-		const FVector Impulse = FVector(0.f, 0.f, JumpImpulse);
-		Ball->AddImpulse(Impulse);
-		bCanJump = false;
-	}
-}
 
-void ARollingStonesBall::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
-{
-	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	bCanJump = true;
-}
 
-void ARollingStonesBall::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	if (bCanJump)
-	{
-		const FVector Impulse = FVector(0.f, 0.f, JumpImpulse);
-		Ball->AddImpulse(Impulse);
-		bCanJump = false;
-	}
-
-}
-
-void ARollingStonesBall::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	if (bCanJump)
-	{
-		const FVector Impulse = FVector(0.f, 0.f, JumpImpulse);
-		Ball->AddImpulse(Impulse);
-		bCanJump = false;
-	}
-}
