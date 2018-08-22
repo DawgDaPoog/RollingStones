@@ -18,12 +18,15 @@ ARollingStonesBall::ARollingStonesBall()
 	Ball->SetStaticMesh(BallMesh.Object);
 	Ball->BodyInstance.SetCollisionProfileName(UCollisionProfile::PhysicsActor_ProfileName);
 	Ball->SetSimulatePhysics(true);
-	Ball->SetAngularDamping(0.1f);
-	Ball->SetLinearDamping(0.1f);
+
+	Ball->SetAngularDamping(1.f);
+	Ball->SetLinearDamping(1.f);
 	Ball->BodyInstance.MassScale = 3.5f;
 	Ball->BodyInstance.MaxAngularVelocity = 800.0f;
 	Ball->SetNotifyRigidBodyCollision(true);
+	
 	RootComponent = Ball;
+	Ball->SetConstraintMode(EDOFMode::XYPlane);
 
 	// Create a camera boom attached to the root (ball)
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm0"));
@@ -40,24 +43,63 @@ ARollingStonesBall::ARollingStonesBall()
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
 
+	Tags.Add(FName("Player"));
+	
+}
 
+void ARollingStonesBall::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
+	if(bMoving)
+	Ball->AddForce(FVector(UpMovement, RightMovement, 0));
+	
 }
 
 void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
-	PlayerInputComponent->BindAxis("MoveRight", this, &ARollingStonesBall::MoveRight);
-	PlayerInputComponent->BindAxis("MoveForward", this, &ARollingStonesBall::MoveForward);
+	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &ARollingStonesBall::MoveRight);
+	PlayerInputComponent->BindAction("MoveForward", IE_Released,this, &ARollingStonesBall::MoveForward);
+	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &ARollingStonesBall::MoveRight);
+	PlayerInputComponent->BindAction("MoveForward", IE_Released, this, &ARollingStonesBall::MoveForward);
+
 
 }
 
-void ARollingStonesBall::MoveRight(float Val)
+void ARollingStonesBall::MoveRight()
 {
+
+	if (!bMoving){
+		RightMovement = ForceApply;
+		bMoving = true;
+}
 
 }
 
-void ARollingStonesBall::MoveForward(float Val)
+void ARollingStonesBall::MoveForward()
 {
+	if (!bMoving) {
+		UpMovement = ForceApply;
+		bMoving = true;
+	}
+}
+
+void ARollingStonesBall::MoveDown()
+{
+	if (!bMoving) {
+		UpMovement = -ForceApply;
+		bMoving = true;
+	}
+}
+
+void ARollingStonesBall::MoveLeft()
+{
+	if (!bMoving) {
+		RightMovement = -ForceApply;
+		bMoving = true;
+	}
 }
 
 

@@ -25,15 +25,24 @@ class ARollingStonesBall : public APawn
 
 public:
 	ARollingStonesBall();
+	
+	bool bMoving = false;
 
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 protected:
+	
 
 	/** Called for side to side input */
-	void MoveRight(float Val);
+	void MoveRight();
 
 	/** Called to move ball forwards and backwards */
-	void MoveForward(float Val);
+	void MoveForward();
+
+	void MoveDown();
+
+	void MoveLeft();
 
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -48,4 +57,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
 	/** Returns Camera subobject **/
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
+
+private:
+	float RightMovement = 0.f;
+	float UpMovement = 0.f;
+	float ForceApply = 1000000;
 };
