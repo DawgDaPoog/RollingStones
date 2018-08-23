@@ -54,7 +54,19 @@ void ARollingStonesBall::Tick(float DeltaTime)
 
 	if(bMoving)
 	Ball->AddForce(FVector(UpMovement, RightMovement, 0));
-	
+
+	TSet<AActor*> OverlappingActors;
+
+	GetOverlappingActors(OverlappingActors);
+
+	for (AActor* OverlappingActor : OverlappingActors) {
+		UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
+		if (OverlappingActor->ActorHasTag(FName("AttractorVolume")) && !bMoving) {
+			FVector Direction = OverlappingActor->GetActorLocation() - GetActorLocation();
+			float Distance = FVector::Dist(OverlappingActor->GetActorLocation(), GetActorLocation());
+			Ball->AddForce(Direction*Distance*500);
+		}
+	}
 }
 
 void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -62,20 +74,41 @@ void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* Player
 	// set up gameplay key bindings
 	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &ARollingStonesBall::MoveRight);
 	PlayerInputComponent->BindAction("MoveForward", IE_Released,this, &ARollingStonesBall::MoveForward);
-	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &ARollingStonesBall::MoveRight);
-	PlayerInputComponent->BindAction("MoveForward", IE_Released, this, &ARollingStonesBall::MoveForward);
+	PlayerInputComponent->BindAction("MoveLeft", IE_Released, this, &ARollingStonesBall::MoveLeft);
+	PlayerInputComponent->BindAction("MoveDown", IE_Released, this, &ARollingStonesBall::MoveDown);
 
 
+}
+
+void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if (Other->ActorHasTag(FName("StopTile"))) {
+		bMoving = false;
+		ResetMovement();
+	}
+}
+
+
+
+void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
+{
+
+}
+
+void ARollingStonesBall::ResetMovement()
+{
+	UpMovement = 0;
+	RightMovement = 0;
 }
 
 void ARollingStonesBall::MoveRight()
 {
-
-	if (!bMoving){
+	if (!bMoving) {
 		RightMovement = ForceApply;
 		bMoving = true;
-}
-
+	}
 }
 
 void ARollingStonesBall::MoveForward()

@@ -48,7 +48,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
 
-
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 public:
 	/** Returns Ball subobject **/
@@ -58,8 +58,12 @@ public:
 	/** Returns Camera subobject **/
 	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
 private:
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
 	float ForceApply = 1000000;
+
+	void ResetMovement();
 };

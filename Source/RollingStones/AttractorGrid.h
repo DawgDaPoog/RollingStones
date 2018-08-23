@@ -4,32 +4,36 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "StopTile.generated.h"
+#include "AttractorGrid.generated.h"
+
+class AAttractorVolume;
 
 UCLASS()
-class ROLLINGSTONES_API AStopTile : public AActor
+class ROLLINGSTONES_API AAttractorGrid : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AStopTile();
+	AAttractorGrid();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")
+	int32 GridSize = 10;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* Mesh;
-	
+	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")
+	float GridGap = 100.f;
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")
+	TSubclassOf<AActor> AttractorVolume;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	
-
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	
 
 	
 	

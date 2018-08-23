@@ -1,7 +1,7 @@
+
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "StopTile.h"
-#include "RollingStonesBall.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 
@@ -14,6 +14,8 @@ AStopTile::AStopTile()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetNotifyRigidBodyCollision(true);
 	RootComponent = Mesh;
+
+	Tags.Add(FName("StopTile"));
 }
 
 // Called when the game starts or when spawned
@@ -23,15 +25,7 @@ void AStopTile::BeginPlay()
 	
 }
 
-void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
-{
-	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-
-	if (Other->ActorHasTag(FName("Player")))
-	Cast<ARollingStonesBall>(Other)->bMoving = false;
-
-}
 
 // Called every frame
 void AStopTile::Tick(float DeltaTime)
@@ -39,6 +33,8 @@ void AStopTile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
 
 
 
