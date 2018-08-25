@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
+#include "AttractorBox.h"
 
 ARollingStonesBall::ARollingStonesBall()
 {
@@ -55,16 +56,19 @@ void ARollingStonesBall::Tick(float DeltaTime)
 	if(bMoving)
 	Ball->AddForce(FVector(UpMovement, RightMovement, 0));
 
-	TSet<AActor*> OverlappingActors;
-
 	GetOverlappingActors(OverlappingActors);
 
 	for (AActor* OverlappingActor : OverlappingActors) {
-		UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
-		if (OverlappingActor->ActorHasTag(FName("AttractorVolume")) && !bMoving) {
+		if (OverlappingActor->ActorHasTag(FName("AttractorVolume")) && !bMoving)
+		{
 			FVector Direction = OverlappingActor->GetActorLocation() - GetActorLocation();
 			float Distance = FVector::Dist(OverlappingActor->GetActorLocation(), GetActorLocation());
 			Ball->AddForce(Direction*Distance*500);
+			Cast<AAttractorBox>(OverlappingActor)->LockWalls();
+		}
+		else if (bMoving)
+		{
+			CallUnlockWalls();
 		}
 	}
 }
@@ -108,8 +112,12 @@ void ARollingStonesBall::MoveRight()
 	if (!bMoving) {
 		RightMovement = ForceApply;
 		bMoving = true;
+		//Ball->SetConstraintMode(EDOFMode::YZPlane);
 	}
+	CallUnlockWalls();
 }
+
+
 
 void ARollingStonesBall::MoveForward()
 {
@@ -117,6 +125,7 @@ void ARollingStonesBall::MoveForward()
 		UpMovement = ForceApply;
 		bMoving = true;
 	}
+	CallUnlockWalls();
 }
 
 void ARollingStonesBall::MoveDown()
@@ -125,6 +134,7 @@ void ARollingStonesBall::MoveDown()
 		UpMovement = -ForceApply;
 		bMoving = true;
 	}
+	CallUnlockWalls();
 }
 
 void ARollingStonesBall::MoveLeft()
@@ -132,6 +142,16 @@ void ARollingStonesBall::MoveLeft()
 	if (!bMoving) {
 		RightMovement = -ForceApply;
 		bMoving = true;
+	}
+	CallUnlockWalls();
+}
+
+void ARollingStonesBall::CallUnlockWalls()
+{
+	for (AActor* OverlappingActor : OverlappingActors)
+	{
+		if (OverlappingActor->ActorHasTag(FName("AttractorVolume")))
+			Cast<AAttractorBox>(OverlappingActor)->UnlockWalls();
 	}
 }
 

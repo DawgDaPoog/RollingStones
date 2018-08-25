@@ -37,6 +37,8 @@ protected:
 	/** Called for side to side input */
 	void MoveRight();
 
+	void CallUnlockWalls();
+
 	/** Called to move ball forwards and backwards */
 	void MoveForward();
 
@@ -64,6 +66,8 @@ private:
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
 	float ForceApply = 1000000;
+
+	TSet<AActor*> OverlappingActors;
 
 	void ResetMovement();
 };

@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AttractorGrid.h"
-#include "AttractorVolume.h"
 #include "Engine/World.h"
-
+#include "AttractorBox.h"
 // Sets default values
 AAttractorGrid::AAttractorGrid()
 {
@@ -16,12 +15,13 @@ AAttractorGrid::AAttractorGrid()
 void AAttractorGrid::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	for (int i = 0; i < GridSize; i++) {
 		for (int j = 0; j < GridSize; j++) {
-			if (AttractorVolume == nullptr) return;
-			AAttractorVolume* Spawned = GetWorld()->SpawnActor<AAttractorVolume>(AttractorVolume,FVector(GetActorLocation().X + -i * GridGap,GetActorLocation().Y + j*GridGap, GetActorLocation().Z),FRotator(),FActorSpawnParameters());
-			
+			if (AttractorBox == nullptr) return;
+			else
+				GetWorld()->SpawnActor<AAttractorBox>(AttractorBox, FVector(GetActorLocation().X - i * GridGap, GetActorLocation().Y + j * GridGap, GetActorLocation().Z), FRotator(0), SpawnParams);
 		}
 	}
 }

@@ -25,7 +25,7 @@ public:
 
 
 	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")
-	TSubclassOf<AActor> AttractorVolume;
+	TSubclassOf<AActor> AttractorBox;
 
 protected:
 	// Called when the game starts or when spawned
