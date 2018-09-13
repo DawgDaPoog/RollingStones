@@ -29,9 +29,5 @@ class ROLLINGSTONES_API AAttractorBox : public ATriggerBox
 
 public:
 	AAttractorBox();
-
-	void LockWalls();
-
-	void UnlockWalls();
 	
 };

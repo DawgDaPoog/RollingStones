@@ -1,10 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "StopTile.generated.h"
+
+
+class ARollingStonesBall;
+
+class AStopVolume;
 
 UCLASS()
 class ROLLINGSTONES_API AStopTile : public AActor
@@ -18,19 +23,19 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* Mesh;
 	
+	UPROPERTY(EditDefaultsOnly, Category = SpawningCollision, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<AStopVolume> StopVolume;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	
+	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
 
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	
-
-	
 	
 };

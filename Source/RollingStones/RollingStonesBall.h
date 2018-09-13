@@ -1,4 +1,4 @@
-// Copyright 1998-2018 Epic Games, Inc. All Rights Reserved.
+// Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #pragma once
 
@@ -23,29 +23,57 @@ class ARollingStonesBall : public APawn
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
 
+	/** Particle effect for enchanced movement */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* SparkTrail;
+
+	/** Particle effect for enchanced movement */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* EnchancedSparkTrail;
+
+	/** Particle system for idling */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* IdleGlow;
+
+	/** Particle system for chargeup effect */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* ChargeUpEffect;
+
+
 public:
 	ARollingStonesBall();
 	
+	// Movement Variables for outside tiles to check and react to on collision
 	bool bMoving = false;
-
+	bool bIsEmpowered = false;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void BeginPlay() override;
+
+	//Checking overlapping actors to add force, hence aligning to our grid
+	void AlignToTheGrid();
+
+	//Reseting movement variables
+	void ResetMovement();
 protected:
 	
-
+	/** Initialises the movement variables*/
+	void StartMovement(bool IsMovingInX, bool IsNegative);
+	
 	/** Called for side to side input */
 	void MoveRight();
-
-	void CallUnlockWalls();
+	void MoveLeft();
 
 	/** Called to move ball forwards and backwards */
 	void MoveForward();
-
 	void MoveDown();
 
-	void MoveLeft();
+	/** Charging movement when holding down the button*/
+	void StartChargingMovement();
 
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
@@ -65,9 +93,19 @@ public:
 private:
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
+
+	bool bIsCharging = false;
+	bool bIsCharged = false;
+
+	//Force that is applied on when moving
 	float ForceApply = 1000000;
 
+	//To check for proper grid allignment
 	TSet<AActor*> OverlappingActors;
 
-	void ResetMovement();
+	void CompleteChargeUp();
+	void IncreaseChargeUpParticleEffect();
+
+	FTimerHandle ChargeUpParticleTimer;
+	
 };

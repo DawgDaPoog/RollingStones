@@ -1,9 +1,10 @@
 
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "StopTile.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
+#include "RollingStonesBall.h"
 
 // Sets default values
 AStopTile::AStopTile()
@@ -22,9 +23,8 @@ AStopTile::AStopTile()
 void AStopTile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
 
+}
 
 
 // Called every frame
@@ -34,6 +34,19 @@ void AStopTile::Tick(float DeltaTime)
 
 }
 
+void AStopTile::ReactToPlayerOnHit(ARollingStonesBall* Player)
+{
+		Player->bMoving = false;
+		Player->ResetMovement();
+}
+
+void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
+{
+	if (Other->ActorHasTag(FName("Player")))
+	{
+		ReactToPlayerOnHit(Cast<ARollingStonesBall>(Other));
+	}
+}
 
 
 

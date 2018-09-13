@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "AttractorBox.h"
 #include "Components/BoxComponent.h"
@@ -25,25 +25,4 @@ AAttractorBox::AAttractorBox() {
 
 }
 
-void AAttractorBox::LockWalls()
-{
-	
-	WallUp->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-	
-	WallDown->SetCollisionProfileName(TEXT("BlockAllDynamic"));
 
-	WallLeft->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-
-	WallRight->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-}
-
-void AAttractorBox::UnlockWalls()
-{
-	WallUp->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-
-	WallDown->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-
-	WallLeft->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-
-	WallRight->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-}
