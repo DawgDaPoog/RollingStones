@@ -121,7 +121,6 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Overlapping"));
 	if (OtherActor->ActorHasTag(FName("StopVolume"))) {
 		bMoving = false;
 		OtherActor->Destroy();
@@ -166,7 +165,7 @@ void ARollingStonesBall::MoveDown()
 
 void ARollingStonesBall::StartChargingMovement()
 {
-	if (!bMoving) 
+	if (!bMoving && !bIsCharging) 
 	{
 		bIsCharging = true;
 		static FTimerHandle ChargeUpTimer;
