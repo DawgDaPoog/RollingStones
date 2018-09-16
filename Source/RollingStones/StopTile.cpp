@@ -10,7 +10,7 @@
 AStopTile::AStopTile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetNotifyRigidBodyCollision(true);
@@ -27,12 +27,7 @@ void AStopTile::BeginPlay()
 }
 
 
-// Called every frame
-void AStopTile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
-}
 
 void AStopTile::ReactToPlayerOnHit(ARollingStonesBall* Player)
 {
@@ -40,11 +35,24 @@ void AStopTile::ReactToPlayerOnHit(ARollingStonesBall* Player)
 		Player->ResetMovement();
 }
 
+void AStopTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
+{
+	Destroy();
+	ReactToPlayerOnHit(Player);
+}
+
 void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	if (Other->ActorHasTag(FName("Player")))
 	{
-		ReactToPlayerOnHit(Cast<ARollingStonesBall>(Other));
+		if (Cast<ARollingStonesBall>(Other)->bIsEmpowered)
+		{
+			ReactToEmpoweredPlayerOnHit(Cast<ARollingStonesBall>(Other));
+		}
+		else
+		{
+			ReactToPlayerOnHit(Cast<ARollingStonesBall>(Other));
+		}
 	}
 }
 

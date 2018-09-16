@@ -108,15 +108,16 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 	
-	if (Other->ActorHasTag(FName("StopTile"))) {
-		bool IsAKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::A);
-		bool IsSKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::S);
-		bool IsWKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::W);
-		bool IsDKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::D);
+	//Movement buffering (not working properely for now)
+	//if (Other->ActorHasTag(FName("StopTile"))) {
+	//	bool IsAKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::A);
+	//	bool IsSKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::S);
+	//	bool IsWKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::W);
+	//	bool IsDKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::D);
 
-		// if the key is down when you hit a wall, start charging (buffering movement)
-		if (IsAKeyDown || IsSKeyDown || IsWKeyDown || IsDKeyDown) StartChargingMovement();
-	}
+	//	// if the key is down when you hit a wall, start charging (buffering movement)
+	//	if (IsAKeyDown || IsSKeyDown || IsWKeyDown || IsDKeyDown) StartChargingMovement();
+	//}
 }
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)

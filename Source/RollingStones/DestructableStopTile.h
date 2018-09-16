@@ -18,5 +18,6 @@ class ROLLINGSTONES_API ADestructableStopTile : public AStopTile
 	
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 	
+	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
 	
 };

@@ -11,6 +11,9 @@ class ARollingStonesBall;
 
 class AStopVolume;
 
+/**
+* A Basic tile class with overridable functionality. Not meant to be placed in the world. It is meant to be a parent class only for other tiles.
+*/
 UCLASS()
 class ROLLINGSTONES_API AStopTile : public AActor
 {
@@ -32,10 +35,10 @@ protected:
 
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
 
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	
+
 	
 };

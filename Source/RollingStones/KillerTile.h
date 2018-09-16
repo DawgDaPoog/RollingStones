@@ -4,19 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "StopTile.h"
-#include "IndestructableTile.generated.h"
+#include "KillerTile.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ROLLINGSTONES_API AIndestructableTile : public AStopTile
+class ROLLINGSTONES_API AKillerTile : public AStopTile
 {
 	GENERATED_BODY()
 	
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
 	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
+
 	
 	
 };
