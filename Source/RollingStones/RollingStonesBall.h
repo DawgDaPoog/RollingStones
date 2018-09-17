@@ -57,6 +57,9 @@ public:
 
 	//Reseting movement variables
 	void ResetMovement();
+
+	//Set a timer to enable moving again after hitting the tile or volume
+	void EnableMovementTimer();
 protected:
 	
 	/** Initialises the movement variables*/
@@ -91,6 +94,8 @@ public:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 private:
+	void EnableMovement();
+
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
 

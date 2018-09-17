@@ -1,18 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
-#include "DestructableStopTile.h"
+#include "SoftTile.h"
 #include "RollingStonesBall.h"
 #include "Engine/StaticMesh.h"
 #include "StopVolume.h"
 
-void ADestructableStopTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
-{
-		//TODO add pre-destruction behavior
-		Super::ReactToPlayerOnHit(Player);
-		Destroy();
-}
-
-void ADestructableStopTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
+void ASoftTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {
 	Destroy();
 	Player->bIsEmpowered = false;
@@ -42,3 +35,14 @@ void ADestructableStopTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Pla
 		}
 	}
 }
+
+void ASoftTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
+{
+	Destroy();
+	Player->bIsEmpowered = false;
+	FVector PlayerToTileVector = GetActorLocation() - Player->GetActorLocation();
+	PlayerToTileVector.Z = 0;
+	Player->GetBall()->AddImpulse(PlayerToTileVector * 20000);
+}
+
+

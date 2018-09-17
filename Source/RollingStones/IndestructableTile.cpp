@@ -28,16 +28,16 @@ void AIndestructableTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Playe
 		FVector PlayerLocation = Player->GetActorLocation();
 
 		if (PlayerLocation.X < UpperX && PlayerLocation.X > LowerX && PlayerLocation.Y < LowerY) {
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, -290, 0), FRotator(0.f), FActorSpawnParameters());
+			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, -270, 0), FRotator(0.f), FActorSpawnParameters());
 		}
 		else if (PlayerLocation.X > UpperX && PlayerLocation.Y > LowerY && PlayerLocation.Y < UpperY) {
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(290, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(270, 0, 0), FRotator(0.f), FActorSpawnParameters());
 		}
 		else if (PlayerLocation.Y > UpperY && PlayerLocation.X > LowerX && PlayerLocation.X < UpperX) {
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, 290, 0), FRotator(0.f), FActorSpawnParameters());
+			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, 270, 0), FRotator(0.f), FActorSpawnParameters());
 		}
 		else if (PlayerLocation.X < LowerX && PlayerLocation.Y >LowerY && PlayerLocation.Y < UpperY) {
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(-290, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(-270, 0, 0), FRotator(0.f), FActorSpawnParameters());
 		}
 	}
 }

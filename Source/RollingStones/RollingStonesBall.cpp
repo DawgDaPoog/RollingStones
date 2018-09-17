@@ -114,7 +114,6 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 	//	bool IsSKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::S);
 	//	bool IsWKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::W);
 	//	bool IsDKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::D);
-
 	//	// if the key is down when you hit a wall, start charging (buffering movement)
 	//	if (IsAKeyDown || IsSKeyDown || IsWKeyDown || IsDKeyDown) StartChargingMovement();
 	//}
@@ -127,6 +126,11 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 		OtherActor->Destroy();
 		ResetMovement();
 	}
+}
+
+void ARollingStonesBall::EnableMovement()
+{
+	bMoving = false;
 }
 
 void ARollingStonesBall::CompleteChargeUp()
@@ -235,6 +239,13 @@ void ARollingStonesBall::ResetMovement()
 	Ball->SetCollisionProfileName(FName("PhysicsActor"));
 	SparkTrail->CustomTimeDilation = 0.02;
 	EnchancedSparkTrail->Deactivate();
+}
+
+void ARollingStonesBall::EnableMovementTimer()
+{
+	static FTimerHandle EnableMovementTimer;
+
+	GetWorldTimerManager().SetTimer(EnableMovementTimer, this, &ARollingStonesBall::EnableMovement, 0.2f, false);
 }
 
 void ARollingStonesBall::AlignToTheGrid()

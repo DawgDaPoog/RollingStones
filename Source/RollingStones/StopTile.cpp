@@ -6,6 +6,7 @@
 #include "Engine/StaticMesh.h"
 #include "RollingStonesBall.h"
 
+
 // Sets default values
 AStopTile::AStopTile()
 {
@@ -31,8 +32,8 @@ void AStopTile::BeginPlay()
 
 void AStopTile::ReactToPlayerOnHit(ARollingStonesBall* Player)
 {
-		Player->bMoving = false;
-		Player->ResetMovement();
+	Player->ResetMovement();
+	Player->EnableMovementTimer();
 }
 
 void AStopTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
@@ -55,6 +56,7 @@ void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimiti
 		}
 	}
 }
+
 
 
 
