@@ -6,12 +6,15 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Engine/World.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
 #include "AttractorBox.h"
 #include "TimerManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
+
+#include "DrawDebugHelpers.h"
 
 ARollingStonesBall::ARollingStonesBall()
 {
@@ -94,29 +97,17 @@ void ARollingStonesBall::BeginPlay()
 void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// set up gameplay key bindings
-	PlayerInputComponent->BindAction("MoveRight", IE_Released, this, &ARollingStonesBall::MoveRight);
-	PlayerInputComponent->BindAction("MoveForward", IE_Released,this, &ARollingStonesBall::MoveForward);
-	PlayerInputComponent->BindAction("MoveLeft", IE_Released, this, &ARollingStonesBall::MoveLeft);
-	PlayerInputComponent->BindAction("MoveDown", IE_Released, this, &ARollingStonesBall::MoveDown);
-	PlayerInputComponent->BindAction("MoveRight", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
-	PlayerInputComponent->BindAction("MoveForward", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
-	PlayerInputComponent->BindAction("MoveLeft", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
-	PlayerInputComponent->BindAction("MoveDown", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
+	PlayerInputComponent->BindAction("MoveRight", IE_Pressed, this, &ARollingStonesBall::MoveRight);
+	PlayerInputComponent->BindAction("MoveForward", IE_Pressed,this, &ARollingStonesBall::MoveForward);
+	PlayerInputComponent->BindAction("MoveLeft", IE_Pressed, this, &ARollingStonesBall::MoveLeft);
+	PlayerInputComponent->BindAction("MoveDown", IE_Pressed, this, &ARollingStonesBall::MoveDown);
+	PlayerInputComponent->BindAction("StartOrCancelChargeUp", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
 }
 
 void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 	
-	//Movement buffering (not working properely for now)
-	//if (Other->ActorHasTag(FName("StopTile"))) {
-	//	bool IsAKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::A);
-	//	bool IsSKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::S);
-	//	bool IsWKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::W);
-	//	bool IsDKeyDown = Cast<APlayerController>(GetController())->IsInputKeyDown(EKeys::D);
-	//	// if the key is down when you hit a wall, start charging (buffering movement)
-	//	if (IsAKeyDown || IsSKeyDown || IsWKeyDown || IsDKeyDown) StartChargingMovement();
-	//}
 }
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
@@ -131,6 +122,50 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 void ARollingStonesBall::EnableMovement()
 {
 	bMoving = false;
+}
+
+bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
+{
+	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Re-initialize hit info
+	FHitResult RV_Hit(ForceInit);
+	//call GetWorld() from within an actor extending class
+	GetWorld()->LineTraceSingleByChannel(
+		RV_Hit,        //result
+		GetActorLocation(),    //start
+		GetActorLocation()*Direction, //end
+		ECC_Visibility, //collision channel
+		RV_TraceParams
+	);
+
+	if (RV_Hit.bBlockingHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit Something: %s"), *RV_Hit.GetActor()->GetName());
+
+		if (RV_Hit.GetActor()->ActorHasTag(FName("StopTile")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit a stop tile"));
+			if (FVector::Dist(GetActorLocation(), RV_Hit.GetActor()->GetActorLocation()) < 150) {
+				UE_LOG(LogTemp, Warning, TEXT("Tile is too close. Can't move that way"));
+				return true;
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("Tile is far away. Can move that way"));
+				return false;
+			}
+			
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
+		return false;
+	}
+	return false;
 }
 
 void ARollingStonesBall::CompleteChargeUp()
@@ -149,52 +184,67 @@ void ARollingStonesBall::IncreaseChargeUpParticleEffect()
 
 void ARollingStonesBall::MoveRight()
 {
-	if (!bMoving) {
+	if (!bMoving && !IsAStopTileBeside(FVector(1.f, 10.f, 1.f))) {
 		StartMovement(false,false);
 	}
 }
 
 void ARollingStonesBall::MoveForward()
 {
-	if (!bMoving) {
+	if (!bMoving && !IsAStopTileBeside(FVector(-10.f, 1.f, 1.f))) {
 		StartMovement(true, false);
 	}
 }
 
 void ARollingStonesBall::MoveDown()
 {
-	if (!bMoving) {
+	if (!bMoving && !IsAStopTileBeside(FVector(10.f, 1.f, 1.f))) {
 		StartMovement(true, true);
+	}
+}
+
+
+void ARollingStonesBall::MoveLeft()
+{
+	if (!bMoving && !IsAStopTileBeside(FVector(1.f, -10.f, 1.f))) {
+		StartMovement(false, true);
 	}
 }
 
 void ARollingStonesBall::StartChargingMovement()
 {
+	static FTimerHandle ChargeUpTimer;
 	if (!bMoving && !bIsCharging) 
 	{
 		bIsCharging = true;
-		static FTimerHandle ChargeUpTimer;
 		
+		ChargeUpEffect->SetRelativeScale3D(FVector(0));
+
 		GetWorldTimerManager().SetTimer(ChargeUpTimer, this, &ARollingStonesBall::CompleteChargeUp, 1.f, false, 1.5f);
 		GetWorldTimerManager().SetTimer(ChargeUpParticleTimer, this, &ARollingStonesBall::IncreaseChargeUpParticleEffect, 0.08f, true, 0.f);
 	}
-}
+	else if (!bMoving && bIsCharging)
+	{
+		bIsCharging = false;
 
-void ARollingStonesBall::MoveLeft()
-{
-	if (!bMoving) {
-		StartMovement(false, true);
+		GetWorldTimerManager().ClearTimer(ChargeUpTimer);
+		GetWorldTimerManager().ClearTimer(ChargeUpParticleTimer);
+
+		
+		ChargeUpEffect->Deactivate();
 	}
 }
+
 
 void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 {
 	bIsCharging = false;
+
 	GetWorldTimerManager().ClearTimer(ChargeUpParticleTimer);
-	ChargeUpEffect->SetRelativeScale3D(FVector(0));
+
 	ChargeUpEffect->Deactivate();
 
-	if (bIsCharged)
+		if (bIsCharged)
 	{
 		EnchancedSparkTrail->Activate();
 		bIsEmpowered = true;
@@ -205,7 +255,7 @@ void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 	if (IsNegative)
 	{
 		RightMovement = -OverallForce * FGenericPlatformMath::Pow(1, (int)IsMovingInX);
-		UpMovement = -OverallForce  * (int)IsMovingInX;
+		UpMovement = -OverallForce * (int)IsMovingInX;
 		Ball->AddImpulse(FVector(-OverallForce * (int)IsMovingInX, -OverallForce * FGenericPlatformMath::Pow(1, (int)IsMovingInX), 0.f));
 	}
 	else
@@ -214,18 +264,16 @@ void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 		UpMovement = OverallForce * (int)IsMovingInX;
 		Ball->AddImpulse(FVector(OverallForce * (int)IsMovingInX, OverallForce * FGenericPlatformMath::Pow(1, (int)IsMovingInX), 0.f));
 	}
-
 	bIsCharged = false;
 	bMoving = true;
 	SparkTrail->CustomTimeDilation = 1;
-
 	if (IsMovingInX)
 	{
-		Ball->SetConstraintMode(EDOFMode::XZPlane);
+			Ball->SetConstraintMode(EDOFMode::XZPlane);
 	}
 	else
 	{
-		Ball->SetConstraintMode(EDOFMode::YZPlane);
+			Ball->SetConstraintMode(EDOFMode::YZPlane);
 	}
 	Ball->SetCollisionProfileName(FName("IgnoreInvisibleWall"));
 }

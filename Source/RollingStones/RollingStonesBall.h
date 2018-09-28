@@ -96,6 +96,8 @@ public:
 private:
 	void EnableMovement();
 
+	bool IsAStopTileBeside(FVector Direction);
+
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
 
