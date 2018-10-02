@@ -44,12 +44,14 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-
+	if (OtherActor->ActorHasTag(FName("StopTile")))
+	{
+		Destroy();
+	}
 }
 
 void AProjectile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
-	//TODO fix
-	Destroy();
+
 }
 

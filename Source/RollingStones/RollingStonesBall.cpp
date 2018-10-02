@@ -84,12 +84,21 @@ void ARollingStonesBall::Tick(float DeltaTime)
 	GetOverlappingActors(OverlappingActors);
 
 	AlignToTheGrid();
+
+	static FHitResult CursorHitResult;
+	GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
+
+	if (CursorHitResult.GetActor())
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *CursorHitResult.GetActor()->GetName());
 }
 
 void ARollingStonesBall::BeginPlay()
 {
 	Super::BeginPlay();
 	ChargeUpEffect->SetRelativeScale3D(FVector(0));
+
+	GetController()->CastToPlayerController()->SetInputMode(FInputModeGameAndUI());
+	GetController()->CastToPlayerController()->bShowMouseCursor = true;
 }
 
 
