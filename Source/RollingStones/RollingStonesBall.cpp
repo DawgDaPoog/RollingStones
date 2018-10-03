@@ -13,6 +13,7 @@
 #include "TimerManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "TileDropMechanic.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -69,7 +70,7 @@ ARollingStonesBall::ARollingStonesBall()
 	ChargeUpEffect->SetupAttachment(RootComponent);
 	ChargeUpEffect->bAbsoluteRotation = true;
 	
-	
+	TileDropMechanic = CreateDefaultSubobject<UTileDropMechanic>(FName("TileDropComponent"));
 	Tags.Add(FName("Player"));
 }
 
@@ -85,11 +86,8 @@ void ARollingStonesBall::Tick(float DeltaTime)
 
 	AlignToTheGrid();
 
-	static FHitResult CursorHitResult;
-	GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
-
-	if (CursorHitResult.GetActor())
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *CursorHitResult.GetActor()->GetName());
+	// TODO create a component for such logic
+	
 }
 
 void ARollingStonesBall::BeginPlay()

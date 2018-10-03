@@ -39,6 +39,9 @@ class ARollingStonesBall : public APawn
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 	class UParticleSystemComponent* ChargeUpEffect;
 
+	/** Component to use the Tile Dropping mechanic */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TileDrop, meta = (AllowPrivateAccess = "true"))
+	class UTileDropMechanic* TileDropMechanic;
 
 public:
 	ARollingStonesBall();

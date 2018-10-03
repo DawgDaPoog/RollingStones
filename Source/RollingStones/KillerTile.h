@@ -13,11 +13,20 @@ UCLASS()
 class ROLLINGSTONES_API AKillerTile : public AStopTile
 {
 	GENERATED_BODY()
-	
+
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
 	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
+	
+	bool bImGoingUp = true;
 
-	
-	
+	FVector StartingLocation;
+
+public:
+
+	AKillerTile();
+
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void BeginPlay() override;
 };
