@@ -43,6 +43,9 @@ class ARollingStonesBall : public APawn
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TileDrop, meta = (AllowPrivateAccess = "true"))
 	class UTileDropMechanic* TileDropMechanic;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Camera Shake")
+	TSubclassOf<class UCameraShake> MyShake;
+
 public:
 	ARollingStonesBall();
 	

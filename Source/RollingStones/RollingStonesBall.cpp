@@ -140,6 +140,10 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 	
+	if (MyShake && Other->ActorHasTag("StopTile"))
+	{
+		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 1.0f);
+	}
 }
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
