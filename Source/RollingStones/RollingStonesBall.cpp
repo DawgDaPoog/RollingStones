@@ -86,7 +86,30 @@ void ARollingStonesBall::Tick(float DeltaTime)
 
 	AlignToTheGrid();
 
-	// TODO create a component for such logic
+	// Smoothing the camera movement
+	//float SmoothCameraSpeed = 1.f*FVector::Dist(Camera->RelativeLocation, GetActorLocation()+ FVector(-600.f, 0.f, 500.f));
+
+
+	/*bool IsXHigherThanNeeded = (Camera->RelativeLocation.X > GetActorLocation().X - 600.f);
+	bool IsYHigherThanNeeded = (Camera->RelativeLocation.Y > GetActorLocation().Y );
+	bool IsZHigherThanNeeded = (Camera->RelativeLocation.Z > GetActorLocation().Z + 500.f);*/
+
+
+	float XDistance = Camera->RelativeLocation.X - (GetActorLocation().X - 600.f);
+	float YDistance = Camera->RelativeLocation.Y - GetActorLocation().Y;
+	float ZDistance = Camera->RelativeLocation.Z - (GetActorLocation().Z + 500.f);
+
+	float VelocityAmplifier = 2.f;
+
+	float XVelocity = -XDistance;
+	float YVelocity = -YDistance;
+	float ZVelocity = -ZDistance;
+
+	/*float XVelocity = (IsXHigherThanNeeded ? -XDistance : -XDistance);
+	float YVelocity = (IsYHigherThanNeeded  ? -YDistance : -YDistance);
+	float ZVelocity = (IsZHigherThanNeeded  ? -ZDistance : -ZDistance);*/
+
+	Camera->RelativeLocation = FVector(Camera->RelativeLocation + FVector(XVelocity, YVelocity, ZVelocity)*DeltaTime*VelocityAmplifier);
 	
 }
 
@@ -97,6 +120,8 @@ void ARollingStonesBall::BeginPlay()
 
 	GetController()->CastToPlayerController()->SetInputMode(FInputModeGameAndUI());
 	GetController()->CastToPlayerController()->bShowMouseCursor = true;
+
+	Camera->RelativeLocation = FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f));
 }
 
 
