@@ -39,7 +39,7 @@ void UTileDropMechanic::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	Cast<APawn>(GetOwner())->GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
 	if (CursorHitResult.GetActor()) {
 		if (CursorHitResult.GetActor()->ActorHasTag("GroundTile")) {
-			UE_LOG(LogTemp, Warning, TEXT("Hit an actor with a GroundTile tag"));
+			//UE_LOG(LogTemp, Warning, TEXT("Hit an actor with a GroundTile tag"));
 
 			Cast<AGroundTile>(CursorHitResult.GetActor())->bHighlighted = true;
 		}

@@ -5,17 +5,24 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "RollingStonesBall.h"
-
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AStopTile::AStopTile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetNotifyRigidBodyCollision(true);
 	RootComponent = Mesh;
+
+	Glow = CreateDefaultSubobject<UParticleSystemComponent>(FName("Glow"));
+	Glow->SetupAttachment(RootComponent);
+
+	OnDestructionParticleEffects = CreateDefaultSubobject<UParticleSystemComponent>(FName("Explosion On Destruction"));
+	OnDestructionParticleEffects->SetupAttachment(RootComponent);
+	OnDestructionParticleEffects->bAutoActivate = false;
 
 	Tags.Add(FName("StopTile"));
 }

@@ -87,14 +87,13 @@ void ARollingStonesBall::Tick(float DeltaTime)
 	AlignToTheGrid();
 
 	// Smoothing the camera movement
-	//float SmoothCameraSpeed = 1.f*FVector::Dist(Camera->RelativeLocation, GetActorLocation()+ FVector(-600.f, 0.f, 500.f));
 
+	SmoothTheCamera(DeltaTime);
+	
+}
 
-	/*bool IsXHigherThanNeeded = (Camera->RelativeLocation.X > GetActorLocation().X - 600.f);
-	bool IsYHigherThanNeeded = (Camera->RelativeLocation.Y > GetActorLocation().Y );
-	bool IsZHigherThanNeeded = (Camera->RelativeLocation.Z > GetActorLocation().Z + 500.f);*/
-
-
+void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
+{
 	float XDistance = Camera->RelativeLocation.X - (GetActorLocation().X - 600.f);
 	float YDistance = Camera->RelativeLocation.Y - GetActorLocation().Y;
 	float ZDistance = Camera->RelativeLocation.Z - (GetActorLocation().Z + 500.f);
@@ -105,12 +104,7 @@ void ARollingStonesBall::Tick(float DeltaTime)
 	float YVelocity = -YDistance;
 	float ZVelocity = -ZDistance;
 
-	/*float XVelocity = (IsXHigherThanNeeded ? -XDistance : -XDistance);
-	float YVelocity = (IsYHigherThanNeeded  ? -YDistance : -YDistance);
-	float ZVelocity = (IsZHigherThanNeeded  ? -ZDistance : -ZDistance);*/
-
 	Camera->RelativeLocation = FVector(Camera->RelativeLocation + FVector(XVelocity, YVelocity, ZVelocity)*DeltaTime*VelocityAmplifier);
-	
 }
 
 void ARollingStonesBall::BeginPlay()
@@ -180,17 +174,17 @@ bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 
 	if (RV_Hit.bBlockingHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit Something: %s"), *RV_Hit.GetActor()->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("Hit Something: %s"), *RV_Hit.GetActor()->GetName());
 
 		if (RV_Hit.GetActor()->ActorHasTag(FName("StopTile")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit a stop tile"));
+			//UE_LOG(LogTemp, Warning, TEXT("Hit a stop tile"));
 			if (FVector::Dist(GetActorLocation(), RV_Hit.GetActor()->GetActorLocation()) < 150) {
-				UE_LOG(LogTemp, Warning, TEXT("Tile is too close. Can't move that way"));
+				//UE_LOG(LogTemp, Warning, TEXT("Tile is too close. Can't move that way"));
 				return true;
 			}
 			else {
-				UE_LOG(LogTemp, Warning, TEXT("Tile is far away. Can move that way"));
+				//UE_LOG(LogTemp, Warning, TEXT("Tile is far away. Can move that way"));
 				return false;
 			}
 			
@@ -198,7 +192,7 @@ bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
+		//UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
 		return false;
 	}
 	return false;

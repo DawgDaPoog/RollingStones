@@ -3,7 +3,7 @@
 #include "Projectile.h"
 #include "Engine/StaticMesh.h"
 #include "Particles/ParticleSystemComponent.h"
-
+#include "RollingStonesBall.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -32,10 +32,14 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
+	
+
 	FVector NewLocation = GetActorLocation();
 
-	float factor = 300.f;
-	NewLocation.X += factor * DeltaTime;
+	NewLocation.X += XFactor * DeltaTime;
+	NewLocation.Y += YFactor * DeltaTime;
+
 	SetActorLocation(NewLocation);
 
 	SetActorRotation(FRotator(GetActorRotation() + FRotator(0.f, 0.f, 25.f)));
@@ -48,10 +52,28 @@ void AProjectile::NotifyActorBeginOverlap(AActor * OtherActor)
 	{
 		Destroy();
 	}
+	if (OtherActor->ActorHasTag("Player"))
+	{
+		if (Cast<ARollingStonesBall>(OtherActor)->bIsEmpowered)
+		{
+			Destroy();
+		}
+		else
+		{
+			OtherActor->Destroy(); // TODO add proper player destroyed sequence
+			Destroy();
+		}
+	}
 }
 
 void AProjectile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 
+}
+
+void AProjectile::SetXYFactors(float XFactorToSet, float YFactorToSet)
+{
+	XFactor = XFactorToSet;
+	YFactor = YFactorToSet;
 }
 

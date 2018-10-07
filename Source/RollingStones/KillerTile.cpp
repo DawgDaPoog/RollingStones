@@ -20,7 +20,7 @@ void AKillerTile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("Ticking"));
+	
 	FVector NewLocation = GetActorLocation();
 	if (NewLocation.Z > StartingLocation.Z + 15.0f) {
 		bImGoingUp = false;

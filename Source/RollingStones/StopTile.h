@@ -29,6 +29,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = SpawningCollision, meta = (AllowPrivateAccess = "true"))
 	TSubclassOf<AStopVolume> StopVolume;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+	class UParticleSystemComponent* Glow;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+	class UParticleSystemComponent* OnDestructionParticleEffects;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

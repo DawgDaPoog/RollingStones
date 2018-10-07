@@ -56,6 +56,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SmoothTheCamera(float DeltaTime);
+
 	virtual void BeginPlay() override;
 
 	//Checking overlapping actors to add force, hence aligning to our grid
