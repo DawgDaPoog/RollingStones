@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "GroundTile.generated.h"
 
+/**
+* A tile to act as ground. Mainly serves to highlight where the player is aiming with the mouse for the tile drop mechanic.
+*/
 UCLASS()
 class ROLLINGSTONES_API AGroundTile : public AActor
 {

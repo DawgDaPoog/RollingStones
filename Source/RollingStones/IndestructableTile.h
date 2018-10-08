@@ -7,7 +7,7 @@
 #include "IndestructableTile.generated.h"
 
 /**
- * 
+ * Non-destructable tile. Will mostly serve as a boundries of level or a skeleton.
  */
 UCLASS()
 class ROLLINGSTONES_API AIndestructableTile : public AStopTile

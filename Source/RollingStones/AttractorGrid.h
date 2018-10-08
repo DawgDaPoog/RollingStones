@@ -8,6 +8,9 @@
 
 class AAttractorVolume;
 
+/**
+* An Actor to spawn a AttractorBox grid for the player to be restrained in
+*/
 UCLASS()
 class ROLLINGSTONES_API AAttractorGrid : public AActor
 {

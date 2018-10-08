@@ -7,7 +7,7 @@
 #include "AttractorBox.generated.h"
 
 /**
- * 
+ *   A box that forms a tile grid, making it so that the player is restrained to the tiles that he's supposed to be in
  */
 class UBoxComponent;
 UCLASS()

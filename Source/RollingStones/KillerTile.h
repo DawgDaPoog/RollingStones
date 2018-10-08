@@ -7,7 +7,7 @@
 #include "KillerTile.generated.h"
 
 /**
- * 
+ * Tile that kills player and NPCs
  */
 UCLASS()
 class ROLLINGSTONES_API AKillerTile : public AStopTile

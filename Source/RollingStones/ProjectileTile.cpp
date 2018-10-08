@@ -46,6 +46,7 @@ void AProjectileTile::Tick(float DeltaTime)
 
 	PulseTheProjectileSpawnDirections(DeltaTime);
 
+
 }
 
 void AProjectileTile::PulseTheProjectileSpawnDirections(float DeltaTime)

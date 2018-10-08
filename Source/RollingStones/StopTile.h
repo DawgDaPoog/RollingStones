@@ -32,8 +32,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Particles")
 	class UParticleSystemComponent* Glow;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Particles")
+	UPROPERTY(EditDefaultsOnly, Category = "Destruction")
 	class UParticleSystemComponent* OnDestructionParticleEffects;
+
+	//Array of actors to spawn during the tile destruction (if it can be destroyed)
+	UPROPERTY(EditDefaultsOnly, Category = "Destruction")
+	TArray<TSubclassOf<AActor>> ArrayOfActorsToSpawnOnDestruction;
 
 protected:
 	// Called when the game starts or when spawned

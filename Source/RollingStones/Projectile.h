@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+
+/**
+* Projectile that is shot from Projectile Tile and Shooter Tiles
+*/
 UCLASS()
 class ROLLINGSTONES_API AProjectile : public AActor
 {

@@ -7,7 +7,7 @@
 #include "CameraShakeOnBallCollision.generated.h"
 
 /**
- * 
+ *  Camera Shake class to activate on player camera when a player hits a tile.
  */
 UCLASS()
 class ROLLINGSTONES_API UCameraShakeOnBallCollision : public UCameraShake

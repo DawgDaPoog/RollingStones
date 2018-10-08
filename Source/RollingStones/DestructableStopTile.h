@@ -7,7 +7,7 @@
 #include "DestructableStopTile.generated.h"
 
 /**
- * Hard Tile. 
+ * Hard Tile. When the player hits it with the regular movement, this tile is destroyed and player is stopped. If the player collides with this tile while empowered, the player assumes it's place
  */
 
 class ARollingStonesBall;

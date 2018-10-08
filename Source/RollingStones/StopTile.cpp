@@ -31,7 +31,7 @@ AStopTile::AStopTile()
 void AStopTile::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 

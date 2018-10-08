@@ -7,7 +7,7 @@
 #include "ProjectileTile.generated.h"
 
 /**
- * 
+ *  A tile that shoots projectiles out of one to four sides upon player or NPC collision
  */
 UCLASS()
 class ROLLINGSTONES_API AProjectileTile : public AStopTile
