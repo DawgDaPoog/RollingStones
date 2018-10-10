@@ -7,7 +7,6 @@ void AKillerTile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 	StartingLocation = GetActorLocation();
 }
 
@@ -37,12 +36,12 @@ void AKillerTile::Tick(float DeltaTime)
 
 void AKillerTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {
-	Player->Destroy();
+	Player->Die();
 }
 
 void AKillerTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 {
-	Player->Destroy();
+	Player->Die();
 }
 
 

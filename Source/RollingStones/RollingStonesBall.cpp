@@ -63,8 +63,6 @@ ARollingStonesBall::ARollingStonesBall()
 	IdleGlow->bAutoActivate = true;
 	IdleGlow->SetupAttachment(RootComponent);
 
-	
-	
 	ChargeUpEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ChargeUpEffect"));
 	ChargeUpEffect->bAutoActivate = false;
 	ChargeUpEffect->SetupAttachment(RootComponent);
@@ -324,6 +322,24 @@ void ARollingStonesBall::EnableMovementTimer()
 	static FTimerHandle EnableMovementTimer;
 
 	GetWorldTimerManager().SetTimer(EnableMovementTimer, this, &ARollingStonesBall::EnableMovement, 0.2f, false);
+}
+
+void ARollingStonesBall::Die()
+{
+	GetController()->CastToPlayerController()->SetInputMode(FInputModeUIOnly());
+	bMoving = false;
+	ResetMovement();
+	SparkTrail->Deactivate();
+	IdleGlow->Deactivate();
+	TileDropMechanic->DestroyComponent();
+
+	Ball->SetVisibility(false);
+	SpawnDeathScreenWidget();
+}
+
+void SpawnDeathScreenWidget_Implementation()
+{
+	// your code here
 }
 
 void ARollingStonesBall::AlignToTheGrid()

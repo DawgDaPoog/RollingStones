@@ -60,7 +60,7 @@ void AProjectile::NotifyActorBeginOverlap(AActor * OtherActor)
 		}
 		else
 		{
-			OtherActor->Destroy(); // TODO add proper player destroyed sequence
+			Cast<ARollingStonesBall>(OtherActor)->Die(); // TODO add proper player destroyed sequence
 			Destroy();
 		}
 	}
@@ -73,7 +73,7 @@ void AProjectile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimi
 
 void AProjectile::SetXYFactors(float XFactorToSet, float YFactorToSet)
 {
-	XFactor = XFactorToSet;
-	YFactor = YFactorToSet;
+		XFactor = XFactorToSet;
+		YFactor = YFactorToSet;
 }
 

@@ -68,6 +68,12 @@ public:
 
 	//Set a timer to enable moving again after hitting the tile or volume
 	void EnableMovementTimer();
+
+	//Called when a player is hit by something lethal
+	void Die();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnDeathScreenWidget();
 protected:
 	
 	/** Initialises the movement variables*/
