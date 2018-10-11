@@ -109,9 +109,11 @@ void ARollingStonesBall::BeginPlay()
 {
 	Super::BeginPlay();
 	ChargeUpEffect->SetRelativeScale3D(FVector(0));
-
-	GetController()->CastToPlayerController()->SetInputMode(FInputModeGameAndUI());
-	GetController()->CastToPlayerController()->bShowMouseCursor = true;
+	
+	if (GetController()) {
+		GetController()->CastToPlayerController()->SetInputMode(FInputModeGameAndUI());
+		GetController()->CastToPlayerController()->bShowMouseCursor = true;
+	}
 
 	Camera->RelativeLocation = FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f));
 }

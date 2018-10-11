@@ -32,8 +32,6 @@ void AKillerTile::Tick(float DeltaTime)
 	SetActorLocation(NewLocation);
 }
 
-
-
 void AKillerTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {
 	Player->Die();
@@ -43,7 +41,3 @@ void AKillerTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 {
 	Player->Die();
 }
-
-
-
-

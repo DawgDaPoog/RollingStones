@@ -6,6 +6,7 @@
 #include "Engine/StaticMesh.h"
 #include "RollingStonesBall.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "EnemyBall.h"
 
 // Sets default values
 AStopTile::AStopTile()
@@ -49,6 +50,13 @@ void AStopTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 	ReactToPlayerOnHit(Player);
 }
 
+void AStopTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
+{
+	EnemyBall->ResetMovement();
+	EnemyBall->InitiateNextStepTimer();
+	EnemyBall->EnableMoving();
+}
+
 void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	if (Other->ActorHasTag(FName("Player")))
@@ -61,6 +69,10 @@ void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimiti
 		{
 			ReactToPlayerOnHit(Cast<ARollingStonesBall>(Other));
 		}
+	}
+	if (Other->ActorHasTag(FName("EnemyBall")))
+	{
+		ReactToEnemyBall(Cast<AEnemyBall>(Other));
 	}
 }
 
