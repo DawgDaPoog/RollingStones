@@ -142,11 +142,7 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-	if (OtherActor->ActorHasTag(FName("StopVolume"))) {
-		bMoving = false;
-		OtherActor->Destroy();
-		ResetMovement();
-	}
+	Super::NotifyActorBeginOverlap(OtherActor);
 }
 
 void ARollingStonesBall::EnableMovement()

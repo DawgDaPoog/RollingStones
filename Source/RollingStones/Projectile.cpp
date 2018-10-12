@@ -4,6 +4,7 @@
 #include "Engine/StaticMesh.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "RollingStonesBall.h"
+#include "EnemyBall.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -31,9 +32,6 @@ void AProjectile::BeginPlay()
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
-	
 
 	FVector NewLocation = GetActorLocation();
 
@@ -63,6 +61,11 @@ void AProjectile::NotifyActorBeginOverlap(AActor * OtherActor)
 			Cast<ARollingStonesBall>(OtherActor)->Die(); // TODO add proper player destroyed sequence
 			Destroy();
 		}
+	}
+	if (OtherActor->ActorHasTag("EnemyBall"))
+	{
+		Cast<AEnemyBall>(OtherActor)->Die();
+		Destroy();
 	}
 }
 

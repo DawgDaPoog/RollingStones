@@ -17,6 +17,8 @@ class ROLLINGSTONES_API AKillerTile : public AStopTile
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
 	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
+
+	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall) override;
 	
 	bool bImGoingUp = true;
 

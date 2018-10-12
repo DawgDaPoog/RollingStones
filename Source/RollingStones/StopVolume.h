@@ -16,5 +16,14 @@ class ROLLINGSTONES_API AStopVolume : public ATriggerBox
 
 	AStopVolume();
 	
+	// When the volume is created, it's creator set's the name of the object that is supposed to be stopped by it. Is is done in such a way for other actors not to be accedentally stopped by this volume.
+	FString ActorThatIsIntendedToBeStopped;
+public:
+	void SetIntendedActorToStop(FString ActorName);
+
+	FString GetIntededActorToStop();
+	
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
 	
 };

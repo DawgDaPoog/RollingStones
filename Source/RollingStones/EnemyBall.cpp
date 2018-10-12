@@ -38,7 +38,7 @@ void AEnemyBall::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 2.f, false);
+	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 3.f, false);
 }
 
 // Called every frame
@@ -94,7 +94,21 @@ void AEnemyBall::AlignToTheGrid()
 void AEnemyBall::InitiateNextStepTimer()
 {
 	IterateTheOrder();
-	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 2.f, false);
+	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 3.f, false);
+}
+
+void AEnemyBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
+{
+
+}
+
+void AEnemyBall::NotifyActorBeginOverlap(AActor * OtherActor)
+{
+	/*if (OtherActor->ActorHasTag(FName("StopVolume"))) {
+		bMoving = false;
+		OtherActor->Destroy();
+		ResetMovement();
+	}*/
 }
 
 void AEnemyBall::InitiateNextStepMovement()

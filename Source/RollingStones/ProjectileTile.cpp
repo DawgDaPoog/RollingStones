@@ -131,26 +131,37 @@ void AProjectileTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 
 		if (PlayerLocation.X < UpperX && PlayerLocation.X > LowerX && PlayerLocation.Y < LowerY) // Collided from the left side
 		{
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, 70, 0), FRotator(0.f), FActorSpawnParameters());
+			AStopVolume* Volume = GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, 70, 0), FRotator(0.f), FActorSpawnParameters());
+			Volume->SetIntendedActorToStop(Player->GetName());
 			bIsProjectileShotFromTheLeft = false;
 		}
 		else if (PlayerLocation.X > UpperX && PlayerLocation.Y > LowerY && PlayerLocation.Y < UpperY) // Collided from the down side
 		{
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(-70, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			AStopVolume* Volume = GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(-70, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			Volume->SetIntendedActorToStop(Player->GetName());
 			bIsProjectileShotFromTheUp = false;
 		}
 		else if (PlayerLocation.Y > UpperY && PlayerLocation.X > LowerX && PlayerLocation.X < UpperX) // Collided from the right side
 		{
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, -70, 0), FRotator(0.f), FActorSpawnParameters());
+			AStopVolume* Volume = GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(0, -70, 0), FRotator(0.f), FActorSpawnParameters());
+			Volume->SetIntendedActorToStop(Player->GetName());
 			bIsProjectileShotFromTheRight = false;
 		}
 		else if (PlayerLocation.X < LowerX && PlayerLocation.Y >LowerY && PlayerLocation.Y < UpperY) // Collided from the up side
 		{
-			GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(70, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			AStopVolume* Volume = GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(70, 0, 0), FRotator(0.f), FActorSpawnParameters());
+			Volume->SetIntendedActorToStop(Player->GetName());
 			bIsProjectileShotFromTheDown = false;
 		}
 	}
 
+	LaunchProjectiles();
+}
+
+void AProjectileTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
+{
+	Destroy();
+	Super::ReactToEnemyBall(EnemyBall);
 	LaunchProjectiles();
 }
 

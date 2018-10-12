@@ -2,6 +2,7 @@
 
 #include "KillerTile.h"
 #include "RollingStonesBall.h"
+#include "EnemyBall.h"
 
 void AKillerTile::BeginPlay()
 {
@@ -40,4 +41,9 @@ void AKillerTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 void AKillerTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 {
 	Player->Die();
+}
+
+void AKillerTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
+{
+	EnemyBall->Die();
 }

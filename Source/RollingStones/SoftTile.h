@@ -19,5 +19,5 @@ class ROLLINGSTONES_API ASoftTile : public AStopTile
 
 	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
 	
-
+	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall) override;
 };

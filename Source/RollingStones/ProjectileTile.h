@@ -18,18 +18,6 @@ public:
 
 	AProjectileTile();
 
-	void ChangeTheIntensityOfActivePointLights(class UPointLightComponent* PointLight, float DeltaTime);
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-
-	void PulseTheProjectileSpawnDirections(float DeltaTime);
-
-	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
-
-	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
-	
 	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 	TSubclassOf<class AProjectile> Projectile;
 
@@ -44,11 +32,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Light")
 	class UPointLightComponent* PointLightDown;
-	
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	bool bIsProjectileShotFromTheRight = false;
-
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	bool bIsProjectileShotFromTheLeft = false;
@@ -58,6 +44,21 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	bool bIsProjectileShotFromTheDown = false;
+
+	void ChangeTheIntensityOfActivePointLights(class UPointLightComponent* PointLight, float DeltaTime);
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
+	void PulseTheProjectileSpawnDirections(float DeltaTime);
+
+	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
+
+	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
+	
+	virtual void ReactToEnemyBall(AEnemyBall* EnemyBall) override;
+	
 private:
 	void LaunchProjectiles();
 

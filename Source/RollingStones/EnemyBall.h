@@ -67,6 +67,10 @@ public:
 	//Starts the timer for excecuting the next step movement function
 	void InitiateNextStepTimer();
 
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
 private:
 
 	// Checks the next movement order and excecutes it
