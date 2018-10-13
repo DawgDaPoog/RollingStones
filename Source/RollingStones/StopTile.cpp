@@ -7,6 +7,7 @@
 #include "RollingStonesBall.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "EnemyBall.h"
+#include "Projectile.h"
 
 // Sets default values
 AStopTile::AStopTile()
@@ -57,6 +58,11 @@ void AStopTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
 	EnemyBall->EnableMoving();
 }
 
+void AStopTile::ReactToProjectile(AProjectile * Projectile)
+{
+	Projectile->StartDestroySequence();
+}
+
 void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
 	if (Other->ActorHasTag(FName("Player")))
@@ -73,6 +79,14 @@ void AStopTile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimiti
 	if (Other->ActorHasTag(FName("EnemyBall")))
 	{
 		ReactToEnemyBall(Cast<AEnemyBall>(Other));
+	}
+}
+
+void AStopTile::NotifyActorBeginOverlap(AActor * OtherActor)
+{
+	if (OtherActor->ActorHasTag(FName("Projectile")))
+	{
+		ReactToProjectile(Cast<AProjectile>(OtherActor));
 	}
 }
 

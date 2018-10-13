@@ -18,6 +18,10 @@ AProjectile::AProjectile()
 	FieryPath = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FieryPath"));
 	FieryPath->bAutoActivate = true;
 	FieryPath->SetupAttachment(RootComponent);
+
+	OnDeathParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("OnDeathParticles"));
+	OnDeathParticles->bAutoActivate = false;
+	OnDeathParticles->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -46,37 +50,33 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-	if (OtherActor->ActorHasTag(FName("StopTile")))
-	{
-		Destroy();
-	}
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		if (Cast<ARollingStonesBall>(OtherActor)->bIsEmpowered)
 		{
-			Destroy();
+			StartDestroySequence();
 		}
 		else
 		{
 			Cast<ARollingStonesBall>(OtherActor)->Die(); // TODO add proper player destroyed sequence
-			Destroy();
+			StartDestroySequence();
 		}
 	}
 	if (OtherActor->ActorHasTag("EnemyBall"))
 	{
 		Cast<AEnemyBall>(OtherActor)->Die();
-		Destroy();
+		StartDestroySequence();
 	}
-}
-
-void AProjectile::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
-{
-
 }
 
 void AProjectile::SetXYFactors(float XFactorToSet, float YFactorToSet)
 {
 		XFactor = XFactorToSet;
 		YFactor = YFactorToSet;
+}
+
+void AProjectile::StartDestroySequence()
+{
+	Destroy(); // TODO add proper death sequence w/ particles and stuff
 }
 

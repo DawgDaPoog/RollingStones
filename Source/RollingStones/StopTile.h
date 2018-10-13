@@ -49,6 +49,9 @@ protected:
 
 	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall);
 
+	virtual void ReactToProjectile(class AProjectile* Projectile);
+
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };

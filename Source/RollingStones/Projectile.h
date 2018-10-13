@@ -26,6 +26,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParticleSystem, meta = (AllowPrivateAccess = "true"))
 	class UParticleSystemComponent* FieryPath;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ParticleSystem, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* OnDeathParticles;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -36,9 +38,9 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-
 	void SetXYFactors(float XFactorToSet, float YFactorToSet);
+
+	void StartDestroySequence();
 private:
 	//Default Speed setting on spawn
 	float XFactor = 0.f;

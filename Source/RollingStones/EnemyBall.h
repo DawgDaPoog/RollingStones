@@ -33,7 +33,9 @@ class ROLLINGSTONES_API AEnemyBall : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
 	class UParticleSystemComponent* IdleGlow;
 
-
+	/** Particle system for dying */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* ExplosionOnDeath;
 
 public:
 	// Sets default values for this pawn's properties

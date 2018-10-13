@@ -31,13 +31,24 @@ AEnemyBall::AEnemyBall()
 	IdleGlow = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("IdleGlow"));
 	IdleGlow->bAutoActivate = true;
 	IdleGlow->SetupAttachment(RootComponent);
+
+	ExplosionOnDeath = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("OnDeathParticles"));
+	ExplosionOnDeath->bAutoActivate = false;
+	ExplosionOnDeath->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AEnemyBall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (IdleGlow)
+	{
+		IdleGlow->SetRelativeLocation(FVector(0.f));
+	}
+	if (ExplosionOnDeath)
+	{
+		ExplosionOnDeath->SetRelativeLocation(FVector(0.f));
+	}
 	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 3.f, false);
 }
 
