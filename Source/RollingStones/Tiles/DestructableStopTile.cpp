@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DestructableStopTile.h"
-#include "RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Engine/StaticMesh.h"
-#include "StopVolume.h"
+#include "../VolumesAndBounds/StopVolume.h"
 
 void ADestructableStopTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {

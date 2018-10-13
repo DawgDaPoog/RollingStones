@@ -4,9 +4,9 @@
 #include "Projectile.h"
 #include "Components/PointLightComponent.h"
 #include "Engine/World.h"
-#include "RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Components/StaticMeshComponent.h"
-#include "StopVolume.h"
+#include "../VolumesAndBounds/StopVolume.h"
 
 AProjectileTile::AProjectileTile()
 {

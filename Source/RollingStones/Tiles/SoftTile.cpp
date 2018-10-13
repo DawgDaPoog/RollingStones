@@ -1,10 +1,10 @@
 // Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "SoftTile.h"
-#include "RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Engine/StaticMesh.h"
-#include "StopVolume.h"
-#include "EnemyBall.h"
+#include "../VolumesAndBounds/StopVolume.h"
+#include "../PlayerAndNpcLogic/EnemyBall.h"
 
 
 void ASoftTile::ReactToPlayerOnHit(ARollingStonesBall * Player)

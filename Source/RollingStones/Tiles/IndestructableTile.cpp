@@ -1,9 +1,9 @@
 // Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "IndestructableTile.h"
-#include "RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Engine/StaticMesh.h"
-#include "StopVolume.h"
+#include "../VolumesAndBounds/StopVolume.h"
 
 void AIndestructableTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {

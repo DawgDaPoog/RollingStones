@@ -4,9 +4,9 @@
 #include "StopTile.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
-#include "RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "EnemyBall.h"
+#include "../PlayerAndNpcLogic/EnemyBall.h"
 #include "Projectile.h"
 
 // Sets default values

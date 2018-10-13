@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "StopTile.h"
+#include "Tiles/StopTile.h"
 #include "ProjectileTile.generated.h"
 
 /**

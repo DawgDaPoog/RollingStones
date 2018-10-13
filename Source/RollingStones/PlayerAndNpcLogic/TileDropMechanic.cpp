@@ -2,7 +2,7 @@
 
 #include "TileDropMechanic.h"
 #include "GameFramework/Pawn.h"
-#include "GroundTile.h"
+#include "../Tiles/GroundTile.h"
 #include "GameFramework/PlayerController.h"
 
 

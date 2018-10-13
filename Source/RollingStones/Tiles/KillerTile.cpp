@@ -1,8 +1,8 @@
 // Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "KillerTile.h"
-#include "RollingStonesBall.h"
-#include "EnemyBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/EnemyBall.h"
 
 void AKillerTile::BeginPlay()
 {

@@ -9,7 +9,7 @@
 #include "Engine/World.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/StaticMesh.h"
-#include "AttractorBox.h"
+#include "../VolumesAndBounds/AttractorBox.h"
 #include "TimerManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"

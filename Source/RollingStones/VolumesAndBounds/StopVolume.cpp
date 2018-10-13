@@ -1,8 +1,8 @@
 // Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "StopVolume.h"
-#include "RollingStonesBall.h"
-#include "EnemyBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/EnemyBall.h"
 
 AStopVolume::AStopVolume() {
 	Tags.Add(FName("StopVolume"));

@@ -3,8 +3,8 @@
 #include "Projectile.h"
 #include "Engine/StaticMesh.h"
 #include "Particles/ParticleSystemComponent.h"
-#include "RollingStonesBall.h"
-#include "EnemyBall.h"
+#include "../PlayerAndNpcLogic/RollingStonesBall.h"
+#include "../PlayerAndNpcLogic/EnemyBall.h"
 
 // Sets default values
 AProjectile::AProjectile()
