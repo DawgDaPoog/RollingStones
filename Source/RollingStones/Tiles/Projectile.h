@@ -40,9 +40,16 @@ public:
 	
 	void SetXYFactors(float XFactorToSet, float YFactorToSet);
 
+	void GetXYFactors(float& XFactorToGet, float& YFactorToGet);
+
 	void StartDestroySequence();
+
+	//a variable for SoftTile to check
+	bool bHasHitSoftTileAlready = false;
 private:
 	//Default Speed setting on spawn
 	float XFactor = 0.f;
 	float YFactor = 0.f;
+
+	
 };

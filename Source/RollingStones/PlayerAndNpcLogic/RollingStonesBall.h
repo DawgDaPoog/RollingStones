@@ -72,6 +72,12 @@ public:
 	//Called when a player is hit by something lethal
 	void Die();
 
+	//A function to redirect the player outwards (Used by the Mirror Tile)
+	void RedirectBackwards();
+
+	//Functions to redirect the player sideways (Used by the Mirror Tile)
+	void RedirectSideways(bool bRedirectRight);
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnDeathScreenWidget();
 protected:
@@ -117,6 +123,10 @@ private:
 
 	bool bIsCharging = false;
 	bool bIsCharged = false;
+
+	//Variables to check if we are moving along X or Y axis
+	bool bMovingInXZ = false;
+	bool bMovingInYZ = false;
 
 	//Force that is applied on when moving
 	float ForceApply = 1000000;

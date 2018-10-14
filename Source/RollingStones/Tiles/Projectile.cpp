@@ -75,6 +75,12 @@ void AProjectile::SetXYFactors(float XFactorToSet, float YFactorToSet)
 		YFactor = YFactorToSet;
 }
 
+void AProjectile::GetXYFactors(float & XFactorToGet, float & YFactorToGet)
+{
+	XFactorToGet = XFactor;
+	YFactorToGet = YFactor;
+}
+
 void AProjectile::StartDestroySequence()
 {
 	Destroy(); // TODO add proper death sequence w/ particles and stuff

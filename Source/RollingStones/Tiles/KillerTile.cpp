@@ -3,6 +3,7 @@
 #include "KillerTile.h"
 #include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "../PlayerAndNpcLogic/EnemyBall.h"
+#include "Projectile.h"
 
 void AKillerTile::BeginPlay()
 {
@@ -46,4 +47,10 @@ void AKillerTile::ReactToEmpoweredPlayerOnHit(ARollingStonesBall * Player)
 void AKillerTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
 {
 	EnemyBall->Die();
+}
+
+void AKillerTile::ReactToProjectile(AProjectile * Projectile)
+{
+	Destroy(); //TODO add a proper destruction sequence
+	Projectile->StartDestroySequence();
 }

@@ -14,10 +14,11 @@ class ROLLINGSTONES_API ASoftTile : public AStopTile
 {
 	GENERATED_BODY()
 
+	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
-	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
-
-	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
+	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
 	
 	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall) override;
+
+	virtual void ReactToProjectile(class AProjectile* Projectile) override;
 };

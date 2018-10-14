@@ -80,6 +80,8 @@ void AEnemyBall::ResetMovement()
 {
 	UpMovement = 0;
 	RightMovement = 0;
+	bMovingInXZ = false;
+	bMovingInYZ = false;
 	Ball->SetConstraintMode(EDOFMode::None);
 	Ball->SetCollisionProfileName(FName("PhysicsActor"));
 }
@@ -106,6 +108,51 @@ void AEnemyBall::InitiateNextStepTimer()
 {
 	IterateTheOrder();
 	GetWorldTimerManager().SetTimer(NextMoveTimer, this, &AEnemyBall::InitiateNextStepMovement, 3.f, false);
+}
+
+void AEnemyBall::RedirectBackwards()
+{
+	UpMovement = -UpMovement;
+	RightMovement = -RightMovement;
+	Ball->AddImpulse(FVector(UpMovement, RightMovement, 0.f));
+}
+
+void AEnemyBall::RedirectSideways(bool bRedirectRight)
+{
+	if (bMovingInXZ)
+	{
+		Ball->SetConstraintMode(EDOFMode::YZPlane);
+		bMovingInXZ = false;
+		bMovingInYZ = true;
+		if (bRedirectRight)
+		{
+			Swap(UpMovement, RightMovement);
+			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+		}
+		else
+		{
+			Swap(UpMovement, RightMovement);
+			RightMovement = -RightMovement;
+			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+		}
+	}
+	else if (bMovingInYZ)
+	{
+		Ball->SetConstraintMode(EDOFMode::XZPlane);
+		bMovingInXZ = true;
+		bMovingInYZ = false;
+		if (bRedirectRight)
+		{
+			Swap(UpMovement, RightMovement);
+			UpMovement = -UpMovement;
+			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+		}
+		else
+		{
+			Swap(UpMovement, RightMovement);
+			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+		}
+	}
 }
 
 void AEnemyBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
@@ -193,10 +240,12 @@ void AEnemyBall::StartMovement(bool IsMovingInX, bool IsNegative)
 	if (IsMovingInX)
 	{
 		Ball->SetConstraintMode(EDOFMode::XZPlane);
+		bMovingInXZ = true;
 	}
 	else
 	{
 		Ball->SetConstraintMode(EDOFMode::YZPlane);
+		bMovingInYZ = true;
 	}
 	Ball->SetCollisionProfileName(FName("IgnoreInvisibleWall"));
 }

@@ -69,6 +69,12 @@ public:
 	//Starts the timer for excecuting the next step movement function
 	void InitiateNextStepTimer();
 
+	//A function to redirect the player outwards (Used by the Mirror Tile)
+	void RedirectBackwards();
+
+	//Functions to redirect the player sideways (Used by the Mirror Tile)
+	void RedirectSideways(bool bRedirectRight);
+
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -107,6 +113,10 @@ private:
 
 	// Iterator to show which step we are excecuting
 	int MovementIterator = 0;
+
+	//variables to check if we are moving along X axis or Y axis
+	bool bMovingInXZ = false;
+	bool bMovingInYZ = false;
 
 	// Array of moving orders for designer to choose the movement pattern of this ball
 	UPROPERTY(EditInstanceOnly, Category = "Movement Orders")

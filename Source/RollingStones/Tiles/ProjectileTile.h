@@ -53,11 +53,13 @@ public:
 
 	void PulseTheProjectileSpawnDirections(float DeltaTime);
 
-	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player);
+	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
-	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player);
+	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
 	
 	virtual void ReactToEnemyBall(AEnemyBall* EnemyBall) override;
+
+	virtual void ReactToProjectile(class AProjectile* Projectile) override;
 	
 private:
 	void LaunchProjectiles();

@@ -76,7 +76,6 @@ void ARollingStonesBall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
 	if(bMoving)
 	Ball->AddForce(FVector(UpMovement, RightMovement, 0));
 
@@ -137,7 +136,9 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 	if (MyShake && Other->ActorHasTag("StopTile"))
 	{
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 1.0f);
+		UE_LOG(LogTemp, Warning, TEXT("I Hit %s"), *Other->GetName());
 	}
+	
 }
 
 void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
@@ -159,7 +160,7 @@ bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 
 	//Re-initialize hit info
 	FHitResult RV_Hit(ForceInit);
-	//call GetWorld() from within an actor extending class
+	
 	GetWorld()->LineTraceSingleByChannel(
 		RV_Hit,        //result
 		GetActorLocation(),    //start
@@ -170,17 +171,17 @@ bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 
 	if (RV_Hit.bBlockingHit)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Something: %s"), *RV_Hit.GetActor()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Hit Something: %s"), *RV_Hit.GetActor()->GetName());
 
 		if (RV_Hit.GetActor()->ActorHasTag(FName("StopTile")))
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("Hit a stop tile"));
+			UE_LOG(LogTemp, Warning, TEXT("Hit a stop tile"));
 			if (FVector::Dist(GetActorLocation(), RV_Hit.GetActor()->GetActorLocation()) < 150) {
-				//UE_LOG(LogTemp, Warning, TEXT("Tile is too close. Can't move that way"));
+				UE_LOG(LogTemp, Warning, TEXT("Tile is too close. Can't move that way"));
 				return true;
 			}
 			else {
-				//UE_LOG(LogTemp, Warning, TEXT("Tile is far away. Can move that way"));
+				UE_LOG(LogTemp, Warning, TEXT("Tile is far away. Can move that way"));
 				return false;
 			}
 			
@@ -188,7 +189,7 @@ bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 	}
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
+		UE_LOG(LogTemp, Warning, TEXT("Hit Nothing"));
 		return false;
 	}
 	return false;
@@ -296,10 +297,12 @@ void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 	if (IsMovingInX)
 	{
 			Ball->SetConstraintMode(EDOFMode::XZPlane);
+			bMovingInXZ = true;
 	}
 	else
 	{
 			Ball->SetConstraintMode(EDOFMode::YZPlane);
+			bMovingInYZ = true;
 	}
 	Ball->SetCollisionProfileName(FName("IgnoreInvisibleWall"));
 }
@@ -309,6 +312,8 @@ void ARollingStonesBall::ResetMovement()
 	UpMovement = 0;
 	RightMovement = 0;
 	bIsEmpowered = false;
+	bMovingInXZ = false;
+	bMovingInYZ = false;
 	Ball->SetConstraintMode(EDOFMode::None);
 	Ball->SetCollisionProfileName(FName("PhysicsActor"));
 	SparkTrail->CustomTimeDilation = 0.02;
@@ -333,6 +338,51 @@ void ARollingStonesBall::Die()
 
 	Ball->SetVisibility(false);
 	SpawnDeathScreenWidget();
+}
+
+void ARollingStonesBall::RedirectBackwards()
+{
+	RightMovement = -RightMovement;
+	UpMovement = -UpMovement;
+	Ball->AddImpulse(FVector(UpMovement, RightMovement, 0.f));
+}
+
+void ARollingStonesBall::RedirectSideways(bool bRedirectRight)
+{
+	if (bMovingInXZ)
+	{
+		Ball->SetConstraintMode(EDOFMode::YZPlane);
+		bMovingInXZ = false;
+		bMovingInYZ = true;
+		if (bRedirectRight)
+		{
+			Swap(UpMovement, RightMovement);
+			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+		}
+		else
+		{
+			Swap(UpMovement, RightMovement);
+			RightMovement = -RightMovement;
+			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+		}
+	}
+	else if (bMovingInYZ)
+	{
+		Ball->SetConstraintMode(EDOFMode::XZPlane);
+		bMovingInXZ = true;
+		bMovingInYZ = false;
+		if (bRedirectRight)
+		{
+			Swap(UpMovement, RightMovement);
+			UpMovement = -UpMovement;
+			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+		}
+		else
+		{
+			Swap(UpMovement, RightMovement);
+			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+		}
+	}
 }
 
 void SpawnDeathScreenWidget_Implementation()

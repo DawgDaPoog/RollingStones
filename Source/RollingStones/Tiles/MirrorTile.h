@@ -4,19 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "Tiles/StopTile.h"
-#include "IndestructableTile.generated.h"
+#include "MirrorTile.generated.h"
 
 /**
- * Non-destructable tile. Will mostly serve as a boundries of level or a skeleton.
+ * Mirror tile. Redirects a player
  */
 UCLASS()
-class ROLLINGSTONES_API AIndestructableTile : public AStopTile
+class ROLLINGSTONES_API AMirrorTile : public AStopTile
 {
 	GENERATED_BODY()
-	
+
+protected:
 	virtual void ReactToPlayerOnHit(ARollingStonesBall* Player) override;
 
 	virtual void ReactToEmpoweredPlayerOnHit(ARollingStonesBall* Player) override;
+
+	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall) override;
+
+	virtual void ReactToProjectile(class AProjectile* Projectile) override;
 	
-	//No need to implement ReactToEnemyBall and ReactToProjectile. Uses default reaction.
+	
 };

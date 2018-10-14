@@ -165,12 +165,44 @@ void AProjectileTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
 	LaunchProjectiles();
 }
 
+void AProjectileTile::ReactToProjectile(AProjectile * Projectile)
+{
+	Destroy();
+
+	float boundry = 50.f;
+	float UpperX = GetActorLocation().X + boundry;
+	float LowerX = GetActorLocation().X - boundry;
+	float UpperY = GetActorLocation().Y + boundry;
+	float LowerY = GetActorLocation().Y - boundry;
+	FVector ProjectileLocation = Projectile->GetActorLocation();
+
+	if (ProjectileLocation.X < UpperX && ProjectileLocation.X > LowerX && ProjectileLocation.Y < LowerY) // Collided from the left side
+	{
+		bIsProjectileShotFromTheLeft = false;
+	}
+	else if (ProjectileLocation.X > UpperX && ProjectileLocation.Y > LowerY && ProjectileLocation.Y < UpperY) // Collided from the down side
+	{
+		bIsProjectileShotFromTheUp = false;
+	}
+	else if (ProjectileLocation.Y > UpperY && ProjectileLocation.X > LowerX && ProjectileLocation.X < UpperX) // Collided from the right side
+	{
+		bIsProjectileShotFromTheRight = false;
+	}
+	else if (ProjectileLocation.X < LowerX && ProjectileLocation.Y >LowerY && ProjectileLocation.Y < UpperY) // Collided from the up side
+	{
+		bIsProjectileShotFromTheDown = false;
+	}
+
+	Projectile->StartDestroySequence();
+	LaunchProjectiles();
+}
+
 void AProjectileTile::LaunchProjectiles()
 {
 	float ProjectileSpeed = 400.f;
 	if (bIsProjectileShotFromTheDown)
 	{
-		FTransform DownProjectileTransform = FTransform(FRotator(180.f, 0.f, 0.f), GetActorLocation() + FVector(-40.f, 0.f, 0.f), FVector(1.f));
+		FTransform DownProjectileTransform = FTransform(FRotator(0.f, 180.f, 0.f), GetActorLocation() + FVector(-40.f, 0.f, 0.f), FVector(1.f));
 		AProjectile* SpawnedProjectileDown = GetWorld()->SpawnActor<AProjectile>(Projectile, DownProjectileTransform, FActorSpawnParameters());
 		if (SpawnedProjectileDown)
 		{
@@ -188,7 +220,7 @@ void AProjectileTile::LaunchProjectiles()
 	}
 	if (bIsProjectileShotFromTheRight)
 	{
-		FTransform RightProjectileTransform = FTransform(FRotator(90.f, 0.f, 0.f), GetActorLocation() + FVector(0.f, 40.f, 0.f), FVector(1.f));
+		FTransform RightProjectileTransform = FTransform(FRotator(0.f, 90.f, 0.f), GetActorLocation() + FVector(0.f, 40.f, 0.f), FVector(1.f));
 		AProjectile* SpawnedProjectileRight = GetWorld()->SpawnActor<AProjectile>(Projectile, RightProjectileTransform, FActorSpawnParameters());
 		if (SpawnedProjectileRight)
 		{
@@ -197,7 +229,7 @@ void AProjectileTile::LaunchProjectiles()
 	}
 	if (bIsProjectileShotFromTheLeft)
 	{
-		FTransform LeftProjectileTransform = FTransform(FRotator(-90.f, 0.f, 0.f), GetActorLocation() + FVector(0.f, -40.f, 0.f), FVector(1.f));
+		FTransform LeftProjectileTransform = FTransform(FRotator(0.f, -90.f, 0.f), GetActorLocation() + FVector(0.f, -40.f, 0.f), FVector(1.f));
 		AProjectile* SpawnedProjectileLeft = GetWorld()->SpawnActor<AProjectile>(Projectile, LeftProjectileTransform, FActorSpawnParameters());
 		if (SpawnedProjectileLeft)
 		{

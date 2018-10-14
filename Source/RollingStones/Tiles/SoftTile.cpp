@@ -5,7 +5,7 @@
 #include "Engine/StaticMesh.h"
 #include "../VolumesAndBounds/StopVolume.h"
 #include "../PlayerAndNpcLogic/EnemyBall.h"
-
+#include "Projectile.h"
 
 void ASoftTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {
@@ -82,6 +82,20 @@ void ASoftTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
 			AStopVolume* Volume = GetWorld()->SpawnActor<AStopVolume>(StopVolume, GetActorLocation() + FVector(70, 0, 0), FRotator(0.f), FActorSpawnParameters());
 			Volume->SetIntendedActorToStop(EnemyBall->GetName());
 		}
+	}
+}
+
+void ASoftTile::ReactToProjectile(AProjectile * Projectile)
+{
+	if (Projectile->bHasHitSoftTileAlready)
+	{
+		Destroy(); // TODO add proper destruction sequence
+		Projectile->StartDestroySequence();
+	}
+	else
+	{
+		Destroy(); // TODO add proper destruction sequence
+		Projectile->bHasHitSoftTileAlready = true;
 	}
 }
 

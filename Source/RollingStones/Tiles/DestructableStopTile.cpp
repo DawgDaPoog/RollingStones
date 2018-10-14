@@ -4,7 +4,7 @@
 #include "../PlayerAndNpcLogic/RollingStonesBall.h"
 #include "Engine/StaticMesh.h"
 #include "../VolumesAndBounds/StopVolume.h"
-
+#include "Projectile.h"
 void ADestructableStopTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
 {
 		//TODO add pre-destruction behavior
@@ -52,4 +52,10 @@ void ADestructableStopTile::ReactToEnemyBall(AEnemyBall * EnemyBall)
 	//TODO Add pre-destricton sequence
 	Super::ReactToEnemyBall(EnemyBall);
 	Destroy();
+}
+
+void ADestructableStopTile::ReactToProjectile(AProjectile * Projectile)
+{
+	Destroy();
+	Projectile->StartDestroySequence();
 }
