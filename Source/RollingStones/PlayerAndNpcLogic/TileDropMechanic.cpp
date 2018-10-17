@@ -35,14 +35,29 @@ void UTileDropMechanic::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	static FHitResult CursorHitResult;
-	Cast<APawn>(GetOwner())->GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
-	if (CursorHitResult.GetActor()) {
-		if (CursorHitResult.GetActor()->ActorHasTag("GroundTile")) {
-			//UE_LOG(LogTemp, Warning, TEXT("Hit an actor with a GroundTile tag"));
+	if (bInitiated)
+	{
+		static FHitResult CursorHitResult;
+		Cast<APawn>(GetOwner())->GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
+		if (CursorHitResult.GetActor()) {
+			if (CursorHitResult.GetActor()->ActorHasTag("GroundTile")) {
+				//UE_LOG(LogTemp, Warning, TEXT("Hit an actor with a GroundTile tag"));
 
-			Cast<AGroundTile>(CursorHitResult.GetActor())->bHighlighted = true;
+				Cast<AGroundTile>(CursorHitResult.GetActor())->bHighlighted = true;
+			}
 		}
+	}
+}
+
+void UTileDropMechanic::Initiate()
+{
+	if (bInitiated) 
+	{
+		bInitiated = false;
+	}
+	else
+	{
+		bInitiated = true;
 	}
 }
 

@@ -101,7 +101,6 @@ void AProjectileTile::ChangeTheIntensityOfActivePointLights(UPointLightComponent
 	{
 		PointLight->SetIntensity(GlobalPointLightIntensity - IntensityChangeRate * DeltaTime);
 	}
-
 }
 
 void AProjectileTile::ReactToPlayerOnHit(ARollingStonesBall * Player)
@@ -199,7 +198,7 @@ void AProjectileTile::ReactToProjectile(AProjectile * Projectile)
 
 void AProjectileTile::LaunchProjectiles()
 {
-	float ProjectileSpeed = 400.f;
+	
 	if (bIsProjectileShotFromTheDown)
 	{
 		FTransform DownProjectileTransform = FTransform(FRotator(0.f, 180.f, 0.f), GetActorLocation() + FVector(-40.f, 0.f, 0.f), FVector(1.f));

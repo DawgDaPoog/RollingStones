@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Engine/World.h"
 #include "Engine/StaticMesh.h"
+#include "RollingStonesBall.h"
 
 // Sets default values
 AEnemyBall::AEnemyBall()
@@ -121,52 +122,82 @@ void AEnemyBall::RedirectSideways(bool bRedirectRight)
 {
 	if (bMovingInXZ)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("MovingInYZ now"));
 		Ball->SetConstraintMode(EDOFMode::YZPlane);
 		bMovingInXZ = false;
 		bMovingInYZ = true;
+
 		if (bRedirectRight)
 		{
-			Swap(UpMovement, RightMovement);
+			RightMovement = UpMovement;
+			UpMovement = 0.f;
 			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+
 		}
 		else
 		{
-			Swap(UpMovement, RightMovement);
-			RightMovement = -RightMovement;
+			RightMovement = -UpMovement;
+			UpMovement = 0.f;
 			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+
 		}
 	}
 	else if (bMovingInYZ)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("MovingInXZ now"));
 		Ball->SetConstraintMode(EDOFMode::XZPlane);
 		bMovingInXZ = true;
 		bMovingInYZ = false;
+
 		if (bRedirectRight)
 		{
-			Swap(UpMovement, RightMovement);
-			UpMovement = -UpMovement;
+			UpMovement = -RightMovement;
+			RightMovement = 0.f;
 			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
 		}
 		else
 		{
-			Swap(UpMovement, RightMovement);
+			UpMovement = RightMovement;
+			RightMovement = 0.f;
 			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
 		}
+
 	}
 }
 
 void AEnemyBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
 {
-
+	if (Other->ActorHasTag(TEXT("StopTile")))
+	{
+		GetOverlappingActors(OverlappingActors);
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("Pole"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Alligning"));
+				auto GridLoc = Actor->GetActorLocation();
+				FVector NewLoc = FVector(GridLoc.X, GridLoc.Y, GetActorLocation().Z);
+				SetActorLocation(NewLoc);
+			}
+		}
+	}
+	if (Other->ActorHasTag(TEXT("Player"))) {
+		auto Player = Cast<ARollingStonesBall>(Other);
+		if (Player->bIsEmpowered)
+		{
+			Die();
+		}
+		else
+		{
+			Player->Die();
+			Die();
+		}
+	}
 }
 
 void AEnemyBall::NotifyActorBeginOverlap(AActor * OtherActor)
 {
-	/*if (OtherActor->ActorHasTag(FName("StopVolume"))) {
-		bMoving = false;
-		OtherActor->Destroy();
-		ResetMovement();
-	}*/
+	
 }
 
 void AEnemyBall::InitiateNextStepMovement()

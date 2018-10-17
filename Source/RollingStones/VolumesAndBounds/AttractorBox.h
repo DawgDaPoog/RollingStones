@@ -27,6 +27,8 @@ class ROLLINGSTONES_API AAttractorBox : public ATriggerBox
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Wall, meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* WallRight;
 
+		
+
 public:
 	AAttractorBox();
 	

@@ -23,13 +23,7 @@ public:
 		class UBoxComponent* LWallInner;
 
 	UPROPERTY(VisibleAnywhere, Category = Volumes)
-		class UBoxComponent* LWallOuter;
-
-	UPROPERTY(VisibleAnywhere, Category = Volumes)
 		class UBoxComponent* RWallInner;
-
-	UPROPERTY(VisibleAnywhere, Category = Volumes)
-		class UBoxComponent* RWallOuter;
 
 	UPROPERTY(VisibleAnywhere, Category = Volumes)
 		class UBoxComponent* ProjectileDeflectorWall;
@@ -42,12 +36,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	/** called when something enters the sphere component */
 	UFUNCTION()
-		void OnOverlapBeginOnLI(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnHitRI(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
-		void OnOverlapBeginOnRI(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnHitLI(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnHitDeflect(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
 		void OnOverlapBeginDeflect(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

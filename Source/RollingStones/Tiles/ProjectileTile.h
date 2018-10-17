@@ -68,8 +68,10 @@ private:
 	
 	bool bLightIntensityGoesUp = true;
 
+protected:
 	UPROPERTY(EditDefaultsOnly)
 	float IntensityChangeRate = 5000.f;
 
-	
+	UPROPERTY(EditDefaultsOnly)
+	float ProjectileSpeed = 400.f;
 };

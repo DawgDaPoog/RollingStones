@@ -126,6 +126,7 @@ void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAction("MoveForward", IE_Pressed,this, &ARollingStonesBall::MoveForward);
 	PlayerInputComponent->BindAction("MoveLeft", IE_Pressed, this, &ARollingStonesBall::MoveLeft);
 	PlayerInputComponent->BindAction("MoveDown", IE_Pressed, this, &ARollingStonesBall::MoveDown);
+	PlayerInputComponent->BindAction("InitiateTileDrop", IE_Pressed, this, &ARollingStonesBall::InitiateTileDrop);
 	PlayerInputComponent->BindAction("StartOrCancelChargeUp", IE_Pressed, this, &ARollingStonesBall::StartChargingMovement);
 }
 
@@ -137,6 +138,17 @@ void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other,
 	{
 		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->PlayCameraShake(MyShake, 1.0f);
 		UE_LOG(LogTemp, Warning, TEXT("I Hit %s"), *Other->GetName());
+		GetOverlappingActors(OverlappingActors);
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("Pole"))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Alligning"));
+				auto GridLoc = Actor->GetActorLocation();
+				FVector NewLoc = FVector(GridLoc.X, GridLoc.Y, GetActorLocation().Z);
+				SetActorLocation(NewLoc);
+			}
+		}
 	}
 	
 }
@@ -146,9 +158,63 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 }
 
+bool ARollingStonesBall::IsMovingInXZ()
+{
+	return bMovingInXZ;
+}
+
+bool ARollingStonesBall::IsMovingInYZ()
+{
+	return bMovingInYZ;
+}
+
+void ARollingStonesBall::Empower()
+{
+	if (!bIsEmpowered)
+	{
+		if (bMovingInXZ)
+		{
+			UpMovement = UpMovement * ForceApply / 2;
+		}
+		if (bMovingInYZ)
+		{
+			RightMovement = RightMovement * ForceApply / 2;
+		}
+		Ball->AddImpulse(FVector(UpMovement, RightMovement, 0.f));
+	}
+}
+
+int32 ARollingStonesBall::GetAmountOfEmpowersLeft()
+{
+	return AmountOfEmpowersLeft;
+}
+
+void ARollingStonesBall::SetAmountOfEmpowersLeft(int32 ValueToSet)
+{
+	AmountOfEmpowersLeft = ValueToSet;
+}
+
+int32 ARollingStonesBall::GetAmountOfTiledropsLeft()
+{
+	return AmountOfTiledropsLeft;
+}
+
+void ARollingStonesBall::SetAmountOfTiledropsLeft(int32 ValueToSet)
+{
+	AmountOfTiledropsLeft = ValueToSet;
+}
+
 void ARollingStonesBall::EnableMovement()
 {
 	bMoving = false;
+}
+
+void ARollingStonesBall::InitiateTileDrop()
+{
+	if (TileDropMechanic)
+	{
+		TileDropMechanic->Initiate();
+	}
 }
 
 bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
@@ -241,6 +307,7 @@ void ARollingStonesBall::MoveLeft()
 void ARollingStonesBall::StartChargingMovement()
 {
 	static FTimerHandle ChargeUpTimer;
+	if (AmountOfEmpowersLeft <= 0) { return; }
 	if (!bMoving && !bIsCharging) 
 	{
 		bIsCharging = true;
@@ -256,7 +323,6 @@ void ARollingStonesBall::StartChargingMovement()
 
 		GetWorldTimerManager().ClearTimer(ChargeUpTimer);
 		GetWorldTimerManager().ClearTimer(ChargeUpParticleTimer);
-
 		
 		ChargeUpEffect->Deactivate();
 	}
@@ -273,6 +339,7 @@ void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 
 		if (bIsCharged)
 	{
+		AmountOfEmpowersLeft--;
 		EnchancedSparkTrail->Activate();
 		bIsEmpowered = true;
 	}
@@ -351,43 +418,54 @@ void ARollingStonesBall::RedirectSideways(bool bRedirectRight)
 {
 	if (bMovingInXZ)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("MovingInYZ now"));
 		Ball->SetConstraintMode(EDOFMode::YZPlane);
 		bMovingInXZ = false;
 		bMovingInYZ = true;
+
 		if (bRedirectRight)
 		{
-			Swap(UpMovement, RightMovement);
+			RightMovement = UpMovement;
+			UpMovement = 0.f;
 			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+
 		}
 		else
 		{
-			Swap(UpMovement, RightMovement);
-			RightMovement = -RightMovement;
+			RightMovement = -UpMovement;
+			UpMovement = 0.f;
 			Ball->AddImpulse(FVector(0.f, RightMovement, 0.f));
+
 		}
 	}
 	else if (bMovingInYZ)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("MovingInXZ now"));
 		Ball->SetConstraintMode(EDOFMode::XZPlane);
 		bMovingInXZ = true;
 		bMovingInYZ = false;
+		
 		if (bRedirectRight)
 		{
-			Swap(UpMovement, RightMovement);
-			UpMovement = -UpMovement;
-			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+				UpMovement = -RightMovement;
+				RightMovement = 0.f;
+				Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
 		}
 		else
 		{
-			Swap(UpMovement, RightMovement);
-			Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
+				UpMovement = RightMovement;
+				RightMovement = 0.f;
+				Ball->AddImpulse(FVector(UpMovement, 0.f, 0.f));
 		}
+		
 	}
+
+
+	UE_LOG(LogTemp, Warning, TEXT("UpMovement: %f, RightMovement: %f"), UpMovement, RightMovement);
 }
 
 void SpawnDeathScreenWidget_Implementation()
 {
-	// your code here
 }
 
 void ARollingStonesBall::AlignToTheGrid()

@@ -113,8 +113,27 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	bool IsMovingInXZ();
+
+	bool IsMovingInYZ();
+
+	void Empower();
+	
+	UFUNCTION(BlueprintPure)
+	int32 GetAmountOfEmpowersLeft();
+
+	UFUNCTION(BlueprintCallable)
+	void SetAmountOfEmpowersLeft(int32 ValueToSet);
+
+	UFUNCTION(BlueprintPure)
+	int32 GetAmountOfTiledropsLeft();
+
+	UFUNCTION(BlueprintCallable)
+	void SetAmountOfTiledropsLeft(int32 ValueToSet);
 private:
 	void EnableMovement();
+
+	void InitiateTileDrop();
 
 	bool IsAStopTileBeside(FVector Direction);
 
@@ -133,6 +152,10 @@ private:
 
 	//To check for proper grid allignment
 	TSet<AActor*> OverlappingActors;
+
+	int32 AmountOfEmpowersLeft = 3;
+
+	int32 AmountOfTiledropsLeft = 1;
 
 	void CompleteChargeUp();
 	void IncreaseChargeUpParticleEffect();

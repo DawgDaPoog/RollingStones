@@ -19,9 +19,12 @@ void AAttractorGrid::BeginPlay()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	for (int i = 0; i < GridSize; i++) {
 		for (int j = 0; j < GridSize; j++) {
-			if (AttractorBox == nullptr) return;
+			if (AttractorBox == nullptr || Pole == nullptr) return;
 			else
+			{
 				GetWorld()->SpawnActor<AAttractorBox>(AttractorBox, FVector(GetActorLocation().X - i * GridGap, GetActorLocation().Y + j * GridGap, GetActorLocation().Z), FRotator(0), SpawnParams);
+				GetWorld()->SpawnActor<AActor>(Pole, FVector(GetActorLocation().X - i * GridGap, GetActorLocation().Y + j * GridGap, GetActorLocation().Z), FRotator(0), SpawnParams);
+			}
 		}
 	}
 }

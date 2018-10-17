@@ -21,23 +21,15 @@ ASidewaysMirrorTile::ASidewaysMirrorTile()
 
 	LWallInner = CreateDefaultSubobject<UBoxComponent>(TEXT("InnerLeftWall"));
 	LWallInner->SetupAttachment(RootComponent);
-	LWallInner->SetCollisionProfileName("OverlapAll");
+	LWallInner->SetCollisionProfileName("BlockAllDynamic");
 	LWallInner->SetGenerateOverlapEvents(true);
 
-	LWallOuter = CreateDefaultSubobject<UBoxComponent>(TEXT("OuterLeftWall"));
-	LWallOuter->SetupAttachment(RootComponent);
-	LWallOuter->SetCollisionProfileName("OverlapAll");
-	LWallOuter->SetGenerateOverlapEvents(true);
 
 	RWallInner = CreateDefaultSubobject<UBoxComponent>(TEXT("InnerRightWall"));
 	RWallInner->SetupAttachment(RootComponent);
-	RWallInner->SetCollisionProfileName("OverlapAll");
+	RWallInner->SetCollisionProfileName("BlockAllDynamic");
 	RWallInner->SetGenerateOverlapEvents(true);
 
-	RWallOuter = CreateDefaultSubobject<UBoxComponent>(TEXT("OuterRightWall"));
-	RWallOuter->SetupAttachment(RootComponent);
-	RWallOuter->SetCollisionProfileName("OverlapAll");
-	RWallOuter->SetGenerateOverlapEvents(true);
 
 	ProjectileDeflectorWall = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileDeflectorWall"));
 	ProjectileDeflectorWall->SetupAttachment(RootComponent);
@@ -45,15 +37,19 @@ ASidewaysMirrorTile::ASidewaysMirrorTile()
 	ProjectileDeflectorWall->SetGenerateOverlapEvents(true);
 	
 
+	RWallInner->OnComponentHit.AddDynamic(this, &ASidewaysMirrorTile::OnHitRI);
+
+	LWallInner->OnComponentHit.AddDynamic(this, &ASidewaysMirrorTile::OnHitLI);
+
 	//Binding functions to when something overlaps with our Box Components
-	LWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginOnLI);
+	//LWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginOnLI);
 
-	RWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginOnRI);
+	//RWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginOnRI);
 
-	LWallOuter->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginDeflect);
+	RWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginDeflect);
 
-	RWallOuter->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginDeflect);
-	
+	LWallInner->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginDeflect);
+
 	ProjectileDeflectorWall->OnComponentBeginOverlap.AddDynamic(this, &ASidewaysMirrorTile::OnOverlapBeginDeflectProjectile);
 }
 
@@ -72,32 +68,112 @@ void ASidewaysMirrorTile::Tick(float DeltaTime)
 	
 }
 
-void ASidewaysMirrorTile::OnOverlapBeginOnLI(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void ASidewaysMirrorTile::OnHitRI(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
 {
-	if (OtherActor->ActorHasTag(FName("Player")))
+	if (OtherActor->ActorHasTag("Player"))
 	{
-		Cast<ARollingStonesBall>(OtherActor)->RedirectSideways(false);
-		OtherActor->SetActorLocation(ProjectileDeflectorWall->GetComponentLocation());
+		TSet<AActor*> OverlappingActors;
+		ProjectileDeflectorWall->GetOverlappingActors(OverlappingActors);
+		bool bDoesItOverlap = false;
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("Player"))
+			{
+				bDoesItOverlap = true;
+			}
+		}
+		if (bDoesItOverlap)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting sideways"));
+			Cast<ARollingStonesBall>(OtherActor)->RedirectSideways(true);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting backwards"));
+			Cast<ARollingStonesBall>(OtherActor)->RedirectBackwards();
+		}
 	}
-	if (OtherActor->ActorHasTag(FName("EnemyBall")))
+	if (OtherActor->ActorHasTag("EnemyBall"))
 	{
-		Cast<AEnemyBall>(OtherActor)->RedirectSideways(false);
-		OtherActor->SetActorLocation(ProjectileDeflectorWall->GetComponentLocation());
+		TSet<AActor*> OverlappingActors;
+		ProjectileDeflectorWall->GetOverlappingActors(OverlappingActors);
+		bool bDoesItOverlap = false;
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("EnemyBall"))
+			{
+				bDoesItOverlap = true;
+			}
+		}
+		if (bDoesItOverlap)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting sideways"));
+			Cast<AEnemyBall>(OtherActor)->RedirectSideways(true);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting backwards"));
+			Cast<AEnemyBall>(OtherActor)->RedirectBackwards();
+		}
 	}
 }
 
-void ASidewaysMirrorTile::OnOverlapBeginOnRI(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void ASidewaysMirrorTile::OnHitLI(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
 {
-	if (OtherActor->ActorHasTag(FName("Player")))
+	if (OtherActor->ActorHasTag("Player"))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Redirecting"));
-		Cast<ARollingStonesBall>(OtherActor)->RedirectSideways(true);
-		OtherActor->SetActorLocation(ProjectileDeflectorWall->GetComponentLocation());
+		TSet<AActor*> OverlappingActors;
+		ProjectileDeflectorWall->GetOverlappingActors(OverlappingActors);
+		bool bDoesItOverlap = false;
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("Player"))
+			{
+				bDoesItOverlap = true;
+			}
+		}
+		if (bDoesItOverlap)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting sideways"));
+			Cast<ARollingStonesBall>(OtherActor)->RedirectSideways(false);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting backwards"));
+			Cast<ARollingStonesBall>(OtherActor)->RedirectBackwards();
+		}
 	}
-	if (OtherActor->ActorHasTag(FName("EnemyBall")))
+	if (OtherActor->ActorHasTag("EnemyBall"))
 	{
-		Cast<AEnemyBall>(OtherActor)->RedirectSideways(true);
-		OtherActor->SetActorLocation(ProjectileDeflectorWall->GetComponentLocation());
+		TSet<AActor*> OverlappingActors;
+		ProjectileDeflectorWall->GetOverlappingActors(OverlappingActors);
+		bool bDoesItOverlap = false;
+		for (auto Actor : OverlappingActors)
+		{
+			if (Actor->ActorHasTag("EnemyBall"))
+			{
+				bDoesItOverlap = true;
+			}
+		}
+		if (bDoesItOverlap)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting sideways"));
+			Cast<AEnemyBall>(OtherActor)->RedirectSideways(false);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit on Right Wall registered, redirecting backwards"));
+			Cast<AEnemyBall>(OtherActor)->RedirectBackwards();
+		}
+	}
+}
+
+void ASidewaysMirrorTile::OnHitDeflect(UPrimitiveComponent * HitComponent, AActor * OtherActor, UPrimitiveComponent * OtherComponent, FVector NormalImpulse, const FHitResult & Hit)
+{
+	if (OtherActor->ActorHasTag("Player"))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hit on Outer Wall registered"));
+		Cast<ARollingStonesBall>(OtherActor)->RedirectBackwards();
 	}
 }
 
