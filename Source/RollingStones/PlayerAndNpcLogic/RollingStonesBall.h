@@ -130,6 +130,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetAmountOfTiledropsLeft(int32 ValueToSet);
+
 private:
 	void EnableMovement();
 

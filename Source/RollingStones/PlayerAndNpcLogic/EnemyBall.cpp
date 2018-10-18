@@ -200,6 +200,16 @@ void AEnemyBall::NotifyActorBeginOverlap(AActor * OtherActor)
 	
 }
 
+bool AEnemyBall::IsMovingInXZ()
+{
+	return bMovingInXZ;
+}
+
+bool AEnemyBall::IsMovingInYZ()
+{
+	return bMovingInYZ;
+}
+
 void AEnemyBall::InitiateNextStepMovement()
 {
 	if (MovementOrders.Num() != 0)

@@ -36,6 +36,8 @@ protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	bool bIsBobbing = false;
+
+	bool bIsSpinning = false;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;	

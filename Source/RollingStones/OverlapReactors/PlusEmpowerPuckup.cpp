@@ -6,6 +6,7 @@
 APlusEmpowerPuckup::APlusEmpowerPuckup()
 {
 	bIsBobbing = true;
+	bIsSpinning = true;
 }
 
 void APlusEmpowerPuckup::ReactToPlayer(ARollingStonesBall * Player)

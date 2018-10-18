@@ -67,5 +67,10 @@ void AOverlapReactor::Tick(float DeltaTime)
 		NewLocation.Z += factor * DeltaTime;
 		SetActorLocation(NewLocation);
 	}
+
+	if (bIsSpinning)
+	{
+		SetActorRotation(GetActorRotation() + FRotator(0.f, 50.f, 0.f)*DeltaTime);
+	}
 }
 

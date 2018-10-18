@@ -174,13 +174,17 @@ void ARollingStonesBall::Empower()
 	{
 		if (bMovingInXZ)
 		{
-			UpMovement = UpMovement * ForceApply / 2;
+			bool bIsNegative = UpMovement < 0.f;
+			UpMovement += pow(-1,bIsNegative)*ForceApply / 2;
 		}
 		if (bMovingInYZ)
 		{
-			RightMovement = RightMovement * ForceApply / 2;
+			bool bIsNegative = RightMovement < 0.f;
+			RightMovement += pow(-1, bIsNegative)*ForceApply / 2;
 		}
-		Ball->AddImpulse(FVector(UpMovement, RightMovement, 0.f));
+		Ball->AddImpulse(FVector(UpMovement/2, RightMovement/2, 0.f));
+		bIsEmpowered = true;
+		EnchancedSparkTrail->Activate();
 	}
 }
 

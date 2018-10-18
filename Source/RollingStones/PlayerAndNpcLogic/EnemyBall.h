@@ -79,6 +79,10 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	bool IsMovingInXZ();
+
+	bool IsMovingInYZ();
+
 private:
 
 	// Checks the next movement order and excecutes it

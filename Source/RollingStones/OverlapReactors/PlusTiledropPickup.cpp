@@ -7,10 +7,11 @@
 APlusTiledropPickup::APlusTiledropPickup()
 {
 	bIsBobbing = true;
+	bIsSpinning = true;
 }
 
 void APlusTiledropPickup::ReactToPlayer(ARollingStonesBall * Player)
 {
-	Player->SetAmountOfTiledropsLeft(Player->GetAmountOfEmpowersLeft() + 1);
+	Player->SetAmountOfTiledropsLeft(Player->GetAmountOfTiledropsLeft() + 1);
 	Destroy();
 }
