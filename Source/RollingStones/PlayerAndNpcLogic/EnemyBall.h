@@ -83,6 +83,7 @@ public:
 
 	bool IsMovingInYZ();
 
+
 private:
 
 	// Checks the next movement order and excecutes it

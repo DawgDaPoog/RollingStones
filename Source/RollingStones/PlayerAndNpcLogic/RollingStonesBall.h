@@ -136,6 +136,11 @@ private:
 
 	void InitiateTileDrop();
 
+	void TryTileDrop();
+
+	template<int32 Index>
+	void SetTiledropIndex();
+
 	bool IsAStopTileBeside(FVector Direction);
 
 	float RightMovement = 0.f;
@@ -164,3 +169,12 @@ private:
 	FTimerHandle ChargeUpParticleTimer;
 	
 };
+
+template<int32 Index>
+inline void ARollingStonesBall::SetTiledropIndex()
+{
+	if (TileDropMechanic)
+	{
+		TileDropMechanic->SetSelectedIndex(Index);
+	}
+}

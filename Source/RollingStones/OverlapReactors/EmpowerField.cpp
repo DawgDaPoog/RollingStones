@@ -9,7 +9,3 @@ void AEmpowerField::ReactToPlayer(ARollingStonesBall * Player)
 	Player->Empower();
 }
 
-void AEmpowerField::ReactToEnemyBall(AEnemyBall * EnemyBall)
-{
-	// TODO add empowering on EnemyBall
-}

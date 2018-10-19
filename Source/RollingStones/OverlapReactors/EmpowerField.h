@@ -16,5 +16,4 @@ class ROLLINGSTONES_API AEmpowerField : public AOverlapReactor
 	
 	virtual void ReactToPlayer(class ARollingStonesBall* Player);
 	
-	virtual void ReactToEnemyBall(class AEnemyBall* EnemyBall);
 };

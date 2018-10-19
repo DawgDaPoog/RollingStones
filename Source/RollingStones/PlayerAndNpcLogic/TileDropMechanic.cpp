@@ -4,7 +4,10 @@
 #include "GameFramework/Pawn.h"
 #include "../Tiles/GroundTile.h"
 #include "GameFramework/PlayerController.h"
-
+#include "../Tiles/StopTile.h"
+#include "../OverlapReactors/DropTileDud.h"
+#include "Engine/World.h"
+#include "TimerManager.h"
 
 //TODO finish this class
 
@@ -16,7 +19,6 @@ UTileDropMechanic::UTileDropMechanic()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
 }
 
 
@@ -41,7 +43,6 @@ void UTileDropMechanic::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 		Cast<APawn>(GetOwner())->GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
 		if (CursorHitResult.GetActor()) {
 			if (CursorHitResult.GetActor()->ActorHasTag("GroundTile")) {
-				//UE_LOG(LogTemp, Warning, TEXT("Hit an actor with a GroundTile tag"));
 
 				Cast<AGroundTile>(CursorHitResult.GetActor())->bHighlighted = true;
 			}
@@ -51,13 +52,59 @@ void UTileDropMechanic::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UTileDropMechanic::Initiate()
 {
-	if (bInitiated) 
+	if (!bIsCoolingDown)
 	{
-		bInitiated = false;
+		UE_LOG(LogTemp, Warning, TEXT("Initiating"));
+		if (bInitiated)
+		{
+			bInitiated = false;
+		}
+		else
+		{
+			bInitiated = true;
+		}
 	}
 	else
 	{
-		bInitiated = true;
+		UE_LOG(LogTemp, Warning, TEXT("Coudln't Initiate"));
 	}
+}
+
+void UTileDropMechanic::DropSelectedTile()
+{
+	if (bInitiated)
+	{
+		static FHitResult CursorHitResult;
+		Cast<APawn>(GetOwner())->GetController()->CastToPlayerController()->GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
+		if (CursorHitResult.GetActor()) {
+			if (CursorHitResult.GetActor()->ActorHasTag("GroundTile")) {
+
+				if (!DropTileDud) return;
+				UE_LOG(LogTemp, Warning, TEXT("Spawning Dud"));
+				FTransform DudTransform = FTransform(FRotator(0.f), CursorHitResult.GetActor()->GetActorLocation() + FVector(0.f, 0.f, 1000.f), FVector(1.f));
+				auto SpawnedDud = GetWorld()->SpawnActor<ADropTileDud>(DropTileDud, DudTransform, FActorSpawnParameters());
+				SpawnedDud->SetIndex(SelectedTileIndex);
+				
+				Initiate();
+				bIsCoolingDown = true;
+				GetWorld()->GetTimerManager().SetTimer(CooldownTimer,this, &UTileDropMechanic::StartCooldownTimer, CooldownTime, false);
+			}
+		}
+	}
+}
+
+void UTileDropMechanic::SetSelectedIndex(int32 IndexToSet)
+{
+	SelectedTileIndex = IndexToSet;
+}
+
+int32 UTileDropMechanic::GetSelectedIndex()
+{
+	return SelectedTileIndex;
+}
+
+void UTileDropMechanic::StartCooldownTimer()
+{
+	bIsCoolingDown = false;
 }
 
