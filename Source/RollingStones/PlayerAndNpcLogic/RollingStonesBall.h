@@ -21,7 +21,7 @@ class ARollingStonesBall : public APawn
 
 	/** Camera to view the ball */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* Camera;
+	class ACameraActor* Camera;
 
 	/** Particle effect for enchanced movement */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Ball, meta = (AllowPrivateAccess = "true"))
@@ -46,6 +46,8 @@ class ARollingStonesBall : public APawn
 	UPROPERTY(EditDefaultsOnly, Category = "Camera Shake")
 	TSubclassOf<class UCameraShake> MyShake;
 
+	UPROPERTY(EditInstanceOnly)
+	class ACameraActor* WholeViewCamera;
 public:
 	ARollingStonesBall();
 	
@@ -80,10 +82,12 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnDeathScreenWidget();
-protected:
-	
+
 	/** Initialises the movement variables*/
+	UFUNCTION(BlueprintCallable)
 	void StartMovement(bool IsMovingInX, bool IsNegative);
+
+protected:
 	
 	/** Called for side to side input */
 	void MoveRight();
@@ -108,8 +112,8 @@ public:
 	FORCEINLINE class UStaticMeshComponent* GetBall() const { return Ball; }
 	/** Returns SpringArm subobject **/
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return SpringArm; }
-	/** Returns Camera subobject **/
-	FORCEINLINE class UCameraComponent* GetCamera() const { return Camera; }
+	/** Returns SpringArm subobject **/
+	FORCEINLINE class ACameraActor* GetCamera() const { return Camera; }
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
@@ -117,6 +121,9 @@ public:
 
 	bool IsMovingInYZ();
 
+	bool bInSectionView = false;
+
+	UFUNCTION(BlueprintCallable)
 	void Empower();
 	
 	UFUNCTION(BlueprintPure)
@@ -131,6 +138,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetAmountOfTiledropsLeft(int32 ValueToSet);
 
+	UFUNCTION(BlueprintPure)
+	ACameraActor* GetWholeViewCamera();
+
+	UFUNCTION(BlueprintCallable)
+	void SetWholeViewCamera(ACameraActor* CameraToSet);
 private:
 	void EnableMovement();
 
@@ -142,7 +154,7 @@ private:
 	void SetTiledropIndex();
 
 	bool IsAStopTileBeside(FVector Direction);
-
+	
 	float RightMovement = 0.f;
 	float UpMovement = 0.f;
 

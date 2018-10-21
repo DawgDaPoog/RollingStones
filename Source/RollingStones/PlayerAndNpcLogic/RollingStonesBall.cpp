@@ -14,6 +14,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "TileDropMechanic.h"
+#include "Camera/CameraActor.h"
+
 
 #include "DrawDebugHelpers.h"
 
@@ -46,10 +48,9 @@ ARollingStonesBall::ARollingStonesBall()
 	SpringArm->bEnableCameraLag = false;
 	SpringArm->CameraLagSpeed = 3.f;
 
-	// Create a camera and attach to boom
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera0"));
-	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	Camera->bUsePawnControlRotation = false; // We don't want the controller rotating the camera
+	//// Create a camera and attach to boom
+	//Camera = CreateDefaultSubobject<ACameraActor>(TEXT("Camera0"));
+
 
 	SparkTrail = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkTrail"));
 	SparkTrail->bAutoActivate = false;
@@ -77,12 +78,15 @@ void ARollingStonesBall::BeginPlay()
 	Super::BeginPlay();
 	ChargeUpEffect->SetRelativeScale3D(FVector(0));
 
+	FTransform CameraTransform = FTransform(FRotator(), FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f)), FVector());
+	Camera = GetWorld()->SpawnActor<ACameraActor>(FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f)),FRotator(-45.f,0.f,0.f), FActorSpawnParameters());
 	if (GetController()) {
 		Cast<APlayerController>(GetController())->SetInputMode(FInputModeGameAndUI());
 		Cast<APlayerController>(GetController())->bShowMouseCursor = true;
+		Cast<APlayerController>(GetController())->SetViewTarget(Camera);
 	}
 
-	Camera->RelativeLocation = FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f));
+
 }
 
 void ARollingStonesBall::Tick(float DeltaTime)
@@ -119,6 +123,8 @@ void ARollingStonesBall::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAction("ChooseFirstTileDrop", IE_Pressed, this, &ARollingStonesBall::SetTiledropIndex<0>);
 	PlayerInputComponent->BindAction("ChooseSecondTileDrop", IE_Pressed, this, &ARollingStonesBall::SetTiledropIndex<1>);
 	PlayerInputComponent->BindAction("ChooseThirdTileDrop", IE_Pressed, this, &ARollingStonesBall::SetTiledropIndex<2>);
+
+
 }
 
 void ARollingStonesBall::NotifyHit(UPrimitiveComponent * MyComp, AActor * Other, UPrimitiveComponent * OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult & Hit)
@@ -153,9 +159,9 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 
 void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
 {
-	float XDistance = Camera->RelativeLocation.X - (GetActorLocation().X - 600.f);
-	float YDistance = Camera->RelativeLocation.Y - GetActorLocation().Y;
-	float ZDistance = Camera->RelativeLocation.Z - (GetActorLocation().Z + 500.f);
+	float XDistance = Camera->GetActorLocation().X - (GetActorLocation().X - 600.f);
+	float YDistance = Camera->GetActorLocation().Y - GetActorLocation().Y;
+	float ZDistance = Camera->GetActorLocation().Z - (GetActorLocation().Z + 500.f);
 
 	float VelocityAmplifier = 2.f;
 
@@ -163,7 +169,7 @@ void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
 	float YVelocity = -YDistance;
 	float ZVelocity = -ZDistance;
 
-	Camera->RelativeLocation = FVector(Camera->RelativeLocation + FVector(XVelocity, YVelocity, ZVelocity)*DeltaTime*VelocityAmplifier);
+	Camera->SetActorLocation(FVector(Camera->GetActorLocation() + FVector(XVelocity, YVelocity, ZVelocity)*DeltaTime*VelocityAmplifier));
 }
 
 // Movement Section Start
@@ -331,6 +337,11 @@ void ARollingStonesBall::MoveLeft()
 }
 
 
+void ARollingStonesBall::SetWholeViewCamera(ACameraActor * CameraToSet)
+{
+	WholeViewCamera = CameraToSet;
+}
+
 void ARollingStonesBall::EnableMovement()
 {
 	bMoving = false;
@@ -409,6 +420,11 @@ int32 ARollingStonesBall::GetAmountOfTiledropsLeft()
 void ARollingStonesBall::SetAmountOfTiledropsLeft(int32 ValueToSet)
 {
 	AmountOfTiledropsLeft = ValueToSet;
+}
+
+ACameraActor * ARollingStonesBall::GetWholeViewCamera()
+{
+	return WholeViewCamera;
 }
 
 void ARollingStonesBall::RedirectBackwards()

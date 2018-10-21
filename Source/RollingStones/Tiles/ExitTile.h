@@ -19,6 +19,8 @@ public:
 
 	void DecrementGoalAmount();
 
+	virtual void Tick(float DeltaTime) override;
+
 private:
 	int32 GoalAmount = 0;
 	

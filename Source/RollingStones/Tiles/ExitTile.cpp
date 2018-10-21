@@ -16,3 +16,7 @@ void AExitTile::DecrementGoalAmount()
 		Destroy();
 	}
 }
+
+void AExitTile::Tick(float DeltaTime)
+{
+}
