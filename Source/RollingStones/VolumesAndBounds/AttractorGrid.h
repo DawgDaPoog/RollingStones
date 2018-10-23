@@ -20,7 +20,7 @@ public:
 	// Sets default values for this actor's properties
 	AAttractorGrid();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")
+	UPROPERTY(EditAnywhere, Category = "Grid Setup")
 	int32 GridSize = 10;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Grid Setup")

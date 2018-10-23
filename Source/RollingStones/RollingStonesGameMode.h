@@ -13,6 +13,23 @@ class ARollingStonesGameMode : public AGameModeBase
 
 public:
 	ARollingStonesGameMode();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	class USaveGameRollingStones* GameSave;
+
+	UFUNCTION(BlueprintPure)
+	int32 GetGameSaveLastLevelFinished();
+
+	UFUNCTION(BlueprintPure)
+	int32 GetGameSaveAmountOfTurnsTakenFor(int32 Level);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveLastLevelFinished(int32 LastLevelFinished);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveAmountOfTurnsForLevel(int32 Level,int32 AmountOfTurns);
 };
 
 

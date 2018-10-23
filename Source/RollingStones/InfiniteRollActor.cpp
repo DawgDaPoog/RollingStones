@@ -33,7 +33,9 @@ void AInfiniteRollActor::OnOverlapMoveActor(UPrimitiveComponent * OverlappedComp
 {
 	if (OtherActor->ActorHasTag("Player"))
 	{
-		SetActorLocation(GetActorLocation() + FVector(0.f, 3900.f, -2.f));
+		FVector RightVec = GetActorRightVector();
+	
+		SetActorLocation(GetActorLocation() + RightVec *3900.f - FVector(0.f,0.f,2.f));
 	}
 }
 

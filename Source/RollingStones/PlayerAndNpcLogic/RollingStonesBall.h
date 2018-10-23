@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "RollingStonesBall.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBallDelegate);
+
 UCLASS(config=Game)
 class ARollingStonesBall : public APawn
 {
@@ -60,6 +62,12 @@ public:
 
 	void SmoothTheCamera(float DeltaTime);
 
+	UPROPERTY(EditDefaultsOnly)
+		float XCameraOffset = 400.f;
+
+
+	UPROPERTY(EditDefaultsOnly)
+		float ZCameraOffset = 500.f;
 	virtual void BeginPlay() override;
 
 	//Checking overlapping actors to add force, hence aligning to our grid
@@ -87,6 +95,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartMovement(bool IsMovingInX, bool IsNegative);
 
+	FBallDelegate OnMove;
 protected:
 	
 	/** Called for side to side input */
@@ -143,6 +152,18 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetWholeViewCamera(ACameraActor* CameraToSet);
+
+	UFUNCTION(BlueprintPure)
+	bool IsEmpoweredMovementLocked();
+
+	UFUNCTION(BlueprintPure)
+	bool IsTileDroppingLocked();
+
+	UFUNCTION(BlueprintCallable)
+	void SetEmpoweredMovementLocked(bool Set);
+
+	UFUNCTION(BlueprintCallable)
+	void SetTileDroppingLocked(bool Set);
 private:
 	void EnableMovement();
 
@@ -164,6 +185,10 @@ private:
 	//Variables to check if we are moving along X or Y axis
 	bool bMovingInXZ = false;
 	bool bMovingInYZ = false;
+
+	//Player limitations
+	bool bIsEmpoweredMovementLocked = true;
+	bool bIsTileDroppingLocked = true;
 
 	//Force that is applied on when moving
 	float ForceApply = 1000000;

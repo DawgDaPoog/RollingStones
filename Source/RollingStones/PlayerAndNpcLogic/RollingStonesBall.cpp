@@ -78,8 +78,7 @@ void ARollingStonesBall::BeginPlay()
 	Super::BeginPlay();
 	ChargeUpEffect->SetRelativeScale3D(FVector(0));
 
-	FTransform CameraTransform = FTransform(FRotator(), FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f)), FVector());
-	Camera = GetWorld()->SpawnActor<ACameraActor>(FVector(GetActorLocation() + FVector(-600.f, 0.f, 500.f)),FRotator(-45.f,0.f,0.f), FActorSpawnParameters());
+	Camera = GetWorld()->SpawnActor<ACameraActor>(FVector(GetActorLocation() + FVector(-XCameraOffset, 0.f, ZCameraOffset)),FRotator(-80.f,0.f,0.f), FActorSpawnParameters());
 	if (GetController()) {
 		Cast<APlayerController>(GetController())->SetInputMode(FInputModeGameAndUI());
 		Cast<APlayerController>(GetController())->bShowMouseCursor = true;
@@ -159,11 +158,11 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 
 void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
 {
-	float XDistance = Camera->GetActorLocation().X - (GetActorLocation().X - 600.f);
+	float XDistance = Camera->GetActorLocation().X - (GetActorLocation().X - XCameraOffset);
 	float YDistance = Camera->GetActorLocation().Y - GetActorLocation().Y;
-	float ZDistance = Camera->GetActorLocation().Z - (GetActorLocation().Z + 500.f);
+	float ZDistance = Camera->GetActorLocation().Z - (GetActorLocation().Z + ZCameraOffset);
 
-	float VelocityAmplifier = 2.f;
+	float VelocityAmplifier = 4.f;
 
 	float XVelocity = -XDistance;
 	float YVelocity = -YDistance;
@@ -175,6 +174,7 @@ void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
 // Movement Section Start
 void ARollingStonesBall::StartChargingMovement()
 {
+	if (bIsEmpoweredMovementLocked) { return; }
 	static FTimerHandle ChargeUpTimer;
 	if (AmountOfEmpowersLeft <= 0) { return; }
 	if (!bMoving && !bIsCharging)
@@ -200,6 +200,8 @@ void ARollingStonesBall::StartChargingMovement()
 
 void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 {
+	
+
 	bIsCharging = false;
 
 	GetWorldTimerManager().ClearTimer(ChargeUpParticleTimer);
@@ -245,6 +247,14 @@ void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 
 bool ARollingStonesBall::IsAStopTileBeside(FVector Direction)
 {
+	if (abs(Direction.X) > 2.f && GetActorLocation().X>0)
+	{
+		Direction.X = -Direction.X;
+	}
+	if (abs(Direction.Y) > 2.f && GetActorLocation().Y<0)
+	{
+		Direction.Y = -Direction.Y;
+	}
 	FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
 	RV_TraceParams.bTraceComplex = true;
 	RV_TraceParams.bTraceAsyncScene = true;
@@ -309,21 +319,24 @@ void ARollingStonesBall::EnableMovementTimer()
 
 void ARollingStonesBall::MoveRight()
 {
-	if (!bMoving && !IsAStopTileBeside(FVector(1.f, 10.f, 1.f))) {
+	if (!bMoving && !IsAStopTileBeside(FVector(1.f, 5.f, 1.f))) {
+		OnMove.Broadcast();
 		StartMovement(false, false);
 	}
 }
 
 void ARollingStonesBall::MoveForward()
 {
-	if (!bMoving && !IsAStopTileBeside(FVector(-10.f, 1.f, 1.f))) {
+	if (!bMoving && !IsAStopTileBeside(FVector(-5.f, 1.f, 1.f))) {
+		OnMove.Broadcast();
 		StartMovement(true, false);
 	}
 }
 
 void ARollingStonesBall::MoveDown()
 {
-	if (!bMoving && !IsAStopTileBeside(FVector(10.f, 1.f, 1.f))) {
+	if (!bMoving && !IsAStopTileBeside(FVector(5.f, 1.f, 1.f))) {
+		OnMove.Broadcast();
 		StartMovement(true, true);
 	}
 }
@@ -331,15 +344,31 @@ void ARollingStonesBall::MoveDown()
 
 void ARollingStonesBall::MoveLeft()
 {
-	if (!bMoving && !IsAStopTileBeside(FVector(1.f, -10.f, 1.f))) {
+	if (!bMoving && !IsAStopTileBeside(FVector(1.f, -5.f, 1.f))) {
+		OnMove.Broadcast();
 		StartMovement(false, true);
 	}
 }
 
 
-void ARollingStonesBall::SetWholeViewCamera(ACameraActor * CameraToSet)
+bool ARollingStonesBall::IsEmpoweredMovementLocked()
 {
-	WholeViewCamera = CameraToSet;
+	return bIsEmpoweredMovementLocked;
+}
+
+bool ARollingStonesBall::IsTileDroppingLocked()
+{
+	return bIsTileDroppingLocked;
+}
+
+void ARollingStonesBall::SetEmpoweredMovementLocked(bool Set)
+{
+	bIsEmpoweredMovementLocked = Set;
+}
+
+void ARollingStonesBall::SetTileDroppingLocked(bool Set)
+{
+	bIsTileDroppingLocked = Set;
 }
 
 void ARollingStonesBall::EnableMovement()
@@ -499,6 +528,7 @@ void ARollingStonesBall::Die()
 // TileDrop Section Start
 void ARollingStonesBall::InitiateTileDrop()
 {
+	if (bIsTileDroppingLocked) { return; }
 	if (TileDropMechanic)
 	{
 		TileDropMechanic->Initiate();
@@ -507,6 +537,7 @@ void ARollingStonesBall::InitiateTileDrop()
 
 void ARollingStonesBall::TryTileDrop()
 {
+	if (bIsTileDroppingLocked) { return; }
 	if (TileDropMechanic)
 	{
 		TileDropMechanic->DropSelectedTile();
@@ -523,6 +554,11 @@ void ARollingStonesBall::IncreaseChargeUpParticleEffect()
 	ChargeUpEffect->SetRelativeScale3D(ChargeUpEffect->GetRelativeTransform().GetScale3D()+FVector(0.05));
 }
 
+
+void ARollingStonesBall::SetWholeViewCamera(ACameraActor * CameraToSet)
+{
+	WholeViewCamera = CameraToSet;
+}
 
 void SpawnDeathScreenWidget_Implementation()
 {
