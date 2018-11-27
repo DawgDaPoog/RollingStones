@@ -126,6 +126,8 @@ public:
 
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+	void DecrementTileDropsLeft();
+
 	bool IsMovingInXZ();
 
 	bool IsMovingInYZ();

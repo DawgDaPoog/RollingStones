@@ -23,7 +23,12 @@ class ROLLINGSTONES_API AExitVolume : public AOverlapReactor
 
 	int AmountOfFoundSecrets = 0;
 
+	int AmountOfMoves = 0;
+
 	virtual void ReactToPlayer(class ARollingStonesBall* Player);
+
+	UPROPERTY(EditInstanceOnly, Category = "Exit Tile")
+	class AExitTile* ExitTile;
 public:
 	void IncrementAmountOfSecretsInLevel();
 
@@ -31,4 +36,19 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartEndLevelSequence();
+
+	UFUNCTION(BlueprintPure)
+	int GetAmountOfSecretsInLevel();
+
+	UFUNCTION(BlueprintPure)
+	int GetAmountOfSecretsFound();
+
+	UFUNCTION(BlueprintPure)
+	int GetAmountOfMovesDone();
+
+	UFUNCTION(BlueprintPure)
+	int GetAmountOfGoalsChecked();
+
+	UFUNCTION(BlueprintPure)
+	int GetAmountOfGoals();
 };

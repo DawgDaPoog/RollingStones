@@ -21,7 +21,11 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	int GetGoalAmount();
+
+	int GetCheckedGoalAmount();
 private:
 	int32 GoalAmount = 0;
 	
+	int32 CheckedGoalAmount = 0;
 };

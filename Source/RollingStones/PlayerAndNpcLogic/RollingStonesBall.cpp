@@ -154,7 +154,10 @@ void ARollingStonesBall::NotifyActorBeginOverlap(AActor * OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 }
 
-
+void ARollingStonesBall::DecrementTileDropsLeft()
+{
+	AmountOfTiledropsLeft--;
+}
 
 void ARollingStonesBall::SmoothTheCamera(float DeltaTime)
 {
@@ -200,8 +203,6 @@ void ARollingStonesBall::StartChargingMovement()
 
 void ARollingStonesBall::StartMovement(bool IsMovingInX, bool IsNegative)
 {
-	
-
 	bIsCharging = false;
 
 	GetWorldTimerManager().ClearTimer(ChargeUpParticleTimer);
@@ -528,7 +529,7 @@ void ARollingStonesBall::Die()
 // TileDrop Section Start
 void ARollingStonesBall::InitiateTileDrop()
 {
-	if (bIsTileDroppingLocked) { return; }
+	if (bIsTileDroppingLocked || AmountOfTiledropsLeft <=0) { return; }
 	if (TileDropMechanic)
 	{
 		TileDropMechanic->Initiate();
@@ -537,7 +538,7 @@ void ARollingStonesBall::InitiateTileDrop()
 
 void ARollingStonesBall::TryTileDrop()
 {
-	if (bIsTileDroppingLocked) { return; }
+	if (bIsTileDroppingLocked || AmountOfTiledropsLeft <= 0) { return; }
 	if (TileDropMechanic)
 	{
 		TileDropMechanic->DropSelectedTile();

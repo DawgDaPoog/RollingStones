@@ -25,11 +25,20 @@ public:
 	UFUNCTION(BlueprintPure)
 	int32 GetGameSaveAmountOfTurnsTakenFor(int32 Level);
 
+	UFUNCTION(BlueprintPure)
+	int32 GetGameSaveAmountOfSecretsFoundFor(int32 Level);
+
 	UFUNCTION(BlueprintCallable)
 	void SaveLastLevelFinished(int32 LastLevelFinished);
 
 	UFUNCTION(BlueprintCallable)
 	void SaveAmountOfTurnsForLevel(int32 Level,int32 AmountOfTurns);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveAmountOfSecretsFoundForLevel(int32 Level, int32 AmountOfSecrets);
+
+
+
 };
 
 

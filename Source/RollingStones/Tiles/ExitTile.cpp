@@ -1,7 +1,7 @@
 // Copyright Vladyslav Kulinych 2018. All Rights Reserved.
 
 #include "ExitTile.h"
-
+#include "Components/StaticMeshComponent.h"
 
 void AExitTile::IncrementGoalAmount()
 {
@@ -10,13 +10,24 @@ void AExitTile::IncrementGoalAmount()
 
 void AExitTile::DecrementGoalAmount()
 {
-	GoalAmount--;
-	if (GoalAmount <= 0)
+	CheckedGoalAmount++;
+	if (GoalAmount <= CheckedGoalAmount)
 	{
-		Destroy();
+		Mesh->SetVisibility(false);
+		Mesh->SetCollisionProfileName("OverlapAllDynamic");
 	}
 }
 
 void AExitTile::Tick(float DeltaTime)
 {
+}
+
+int AExitTile::GetGoalAmount()
+{
+	return GoalAmount;
+}
+
+int AExitTile::GetCheckedGoalAmount()
+{
+	return CheckedGoalAmount;
 }

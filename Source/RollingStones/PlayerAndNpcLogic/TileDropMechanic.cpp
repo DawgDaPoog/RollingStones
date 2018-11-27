@@ -8,8 +8,8 @@
 #include "../OverlapReactors/DropTileDud.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "RollingStonesBall.h"
 
-//TODO finish this class
 
 
 // Sets default values for this component's properties
@@ -84,7 +84,8 @@ void UTileDropMechanic::DropSelectedTile()
 				FTransform DudTransform = FTransform(FRotator(0.f), CursorHitResult.GetActor()->GetActorLocation() + FVector(0.f, 0.f, 1000.f), FVector(1.f));
 				auto SpawnedDud = GetWorld()->SpawnActor<ADropTileDud>(DropTileDud, DudTransform, FActorSpawnParameters());
 				SpawnedDud->SetIndex(SelectedTileIndex);
-				
+				Cast<ARollingStonesBall>(GetOwner())->DecrementTileDropsLeft();
+
 				Initiate();
 				bIsCoolingDown = true;
 				GetWorld()->GetTimerManager().SetTimer(CooldownTimer,this, &UTileDropMechanic::StartCooldownTimer, CooldownTime, false);

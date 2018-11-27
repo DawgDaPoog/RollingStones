@@ -22,7 +22,7 @@ public:
 	TArray<int> InHowManyStepsWasLevelFinished;
 
 	UPROPERTY(VisibleAnywhere, Category = Levels)
-		TArray<int> HowManySecretsWasFoundInALevel;
+	TArray<int> HowManySecretsWasFoundInALevel;
 
 	USaveGameRollingStones();
 };

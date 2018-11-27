@@ -36,6 +36,11 @@ int32 ARollingStonesGameMode::GetGameSaveAmountOfTurnsTakenFor(int32 Level)
 	return GameSave->InHowManyStepsWasLevelFinished[Level];
 }
 
+int32 ARollingStonesGameMode::GetGameSaveAmountOfSecretsFoundFor(int32 Level)
+{
+	return GameSave->HowManySecretsWasFoundInALevel[Level];
+}
+
 void ARollingStonesGameMode::SaveLastLevelFinished(int32 LastLevelFinished)
 {
 	GameSave->LastLevelFinished = LastLevelFinished;
@@ -45,6 +50,12 @@ void ARollingStonesGameMode::SaveLastLevelFinished(int32 LastLevelFinished)
 void ARollingStonesGameMode::SaveAmountOfTurnsForLevel(int32 Level, int32 AmountOfTurns)
 {
 	GameSave->InHowManyStepsWasLevelFinished[Level] = AmountOfTurns;
+	UGameplayStatics::SaveGameToSlot(GameSave, TEXT("0"), 0);
+}
+
+void ARollingStonesGameMode::SaveAmountOfSecretsFoundForLevel(int32 Level, int32 AmountOfSecrets)
+{
+	GameSave->HowManySecretsWasFoundInALevel[Level] = AmountOfSecrets;
 	UGameplayStatics::SaveGameToSlot(GameSave, TEXT("0"), 0);
 }
 
